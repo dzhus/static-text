@@ -1,0 +1,48 @@
+* sext, Text with statically encoded length
+
+** Goals
+   We need a set of combinators to build strings which support
+   statically length-checking. Sext is a string-like datatype with
+   length encoded in its type. We'd also like to support several of
+   concrete representations for strings like Text or ByteString so
+   that an appropriate type may be used when a problem demands it.
+
+   We also want to support native GHC type-level natural numbers
+   (provided by GHC.TypeLits) to encode length instead of any other
+   type-level number representation: now that a basic solver is
+   available for type-level naturals in GHC 7.8, the notation provided
+   by them is particularly expressive and the implementation does not
+   rely on any TH hacks.
+
+   The library must introduce as little run-time overhead as possible.
+   Thus we aim to implement a thin type-level wrapper over operations
+   already provided by representation types.
+
+** Text/ByteString support
+   Text and ByteString types both support a set of common operations
+   which are lifted to sext combinators using Sexty class which
+   abstracts over concrete representation.
+
+*** ByteString
+    We support various flavours of ByteString by using common
+    interface provided in bytestring package
+
+** String literals
+   We want to be able to include sext values in our programs in the
+   form of string literals, similar to what's possible for Text or
+   ByteString using OverloadedStrings extension. However, IsString
+   type class is not an option: we ne need to capture lengths of
+   string literals in compile time while not exposing an unsafe
+   operation in IsString instance. The only method of IsString class,
+   fromString, disregards string length information and requires being
+   exposed in order for OverloadedStrings to be supported for sext
+   users.
+
+   Template Haskell seems to be an answer: we could easily implement a
+   sext splice, used as follows:
+
+   : $(sext "Foobar")
+
+   it would expand to this:
+
+   : Sext "Foobar" :: Sext 6
