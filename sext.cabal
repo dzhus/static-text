@@ -1,22 +1,35 @@
 name:                sext
 version:             0.1.0.0
 synopsis:            Text with statically encoded length
--- description:         
+-- description:
 license:             BSD3
 license-file:        LICENSE
 author:              Dmitry Dzhus
 maintainer:          dima@dzhus.org
--- copyright:           
+-- copyright:
 category:            Data
 build-type:          Simple
 cabal-version:       >=1.10
 
+flag text
+  description: Build interface for Text
+  default: True
+
+flag bytestring
+  description: Build interface for ByteString
+  default: True
+
 library
-  exposed-modules:     Data.Sext
-  -- other-modules:       
+  exposed-modules:
+    Data.Sext
+
   build-depends:
-        base >=4.7 && <4.8,
-        text >=1.1 && <1.2
+    base >=4.7 && <4.8
+
+  if flag(text)
+    build-depends:
+      text >=1.1 && <1.2
+
+  ghc-options: -Wall
   hs-source-dirs:      src
   default-language:    Haskell2010
- 
