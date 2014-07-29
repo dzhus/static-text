@@ -9,6 +9,7 @@
 
 module Data.Sext
        ( Sextable(..)
+       , length
        , padLeft
        , padRight
        )
@@ -31,14 +32,17 @@ class Sextable a where
   unsafeCreate :: a -> SC a i
   unwrap :: SC a i -> a
 
-  length :: KnownNat m => SC a m -> P.Integer
-
   append :: SC a m -> SC a n -> SC a (m + n)
   replicate :: KnownNat m => Elem a -> SC a m
   map :: (Elem a -> Elem a) -> SC a m -> SC a m
 
   take :: (KnownNat m, n <= m) => SC a m -> SC a n
   drop :: (KnownNat m, n <= m) => SC a m -> SC a n
+
+
+length :: forall a m.
+          KnownNat m => SC a m -> P.Int
+length _ = P.fromIntegral $ natVal (Proxy :: Proxy m)
 
 
 padLeft :: forall a m n.
@@ -62,8 +66,6 @@ instance Sextable T.Text where
   unsafeCreate = Text
 
   unwrap (Text s) = s
-
-  length (_ :: SC T.Text n) = natVal (Proxy :: Proxy n)
 
   append (Text a) (Text b) = Text (T.append a b)
 
