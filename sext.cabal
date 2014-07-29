@@ -21,10 +21,15 @@ flag bytestring
 
 library
   exposed-modules:
-    Data.Sext
+    Data.Sext,
+    Data.Sext.Class
+
+  other-modules:
+    Data.Sext.TH
 
   build-depends:
-    base >=4.7 && <4.8
+    base             >=4.7 && <4.8,
+    template-haskell
 
   if flag(text)
     build-depends:
