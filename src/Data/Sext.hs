@@ -1,7 +1,7 @@
-{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -18,7 +18,7 @@ module Data.Sext
 
 where
 
-import           Prelude (($))
+import           Prelude (($), (.))
 import qualified Prelude as P
 
 import qualified Data.Text as T
@@ -30,8 +30,8 @@ import           Data.Sext.TH
 
 
 mkSext
-  (\n -> AppT ListT $ VarT n)
-  (\n -> VarT n)
+  (AppT ListT . VarT)
+  (VarT)
   (mkName "List")
   '(P.++)
   'P.replicate

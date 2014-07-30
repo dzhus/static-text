@@ -1,10 +1,6 @@
-{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 
@@ -17,11 +13,9 @@ module Data.Sext.Class
 
 where
 
-import           Prelude (($), (-), (.), (=<<))
 import qualified Prelude as P
 
 import           Data.Proxy
-import qualified Data.Text as T
 
 import           GHC.TypeLits
 
