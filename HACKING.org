@@ -33,23 +33,28 @@
    Type safety is provided by means of an associated type Sext.
    Sextable methods map basic type operations over this wrapper.
 
-** Generating instances for [a]
+** Generating instances for Sextable
    Strings are lists, so we also provide instances for [a] type.
 
    mkSextable TH macro provides a single unique name which can be
    supplied to container/element type generators. This can be used to
    generate instances for list and other Functor unary types.
 
+   Methods definitions are built without any quoting: associated type
+   constructor name would need to be spliced (which is impossible).
+
 ** String literals
    We want to be able to include sext values in our programs in the
    form of string literals, similar to what's possible for Text or
    ByteString using OverloadedStrings extension. However, IsString
-   type class is not an option: we ne need to capture lengths of
-   string literals in compile time while not exposing an unsafe
-   operation in IsString instance. The only method of IsString class,
-   fromString, disregards string length information and requires being
-   exposed in order for OverloadedStrings to be supported for sext
-   users.
+   type class is not an option: we ne need to capture and check
+   lengths of string literals in compile time while not exposing an
+   unsafe operation in IsString instance. The only method of IsString
+   class, fromString, disregards string length information and
+   requires being exposed in order for OverloadedStrings to be
+   supported for sext users. Making fromString non-total would
+   postpone the actual check to runtime which is not desirable as
+   well.
 
    Template Haskell seems to be an answer: we could easily implement a
    sext splice, used as follows:
@@ -64,3 +69,17 @@
    and IsString. Actual literal length is encoded in the type of the
    produced expression. We use untyped Template Haskell since types
    cannot be spliced.
+
+   We also provide create, create' and unsafeCreate methods in
+   Sextable class to enable interfacing Sext with run-time IO sources.
+   They do not provide as much compile-time safety as the sext macro
+   does.
+
+** Type ambiguity
+
+   An expression like
+
+   : (take $ padLeft ' ' sext) :: Sext n t
+
+   won't typecheck. Both combinators have no knowledge about the exact
+   amount characters which need to be dropped/added to sext.

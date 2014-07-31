@@ -12,7 +12,8 @@ module Data.Sext.TH
 
 where
 
-import           Prelude as P
+import           Prelude as P hiding (length)
+import qualified Prelude as P (length)
 
 import           Data.Proxy
 import           Data.Sext.Class
@@ -32,6 +33,9 @@ mkSextable :: (Name -> Type)
            -> Name
            -- ^ Constructor name.
            -> Name
+           -- ^ @length@ name. Used only for run-time length checks in
+           -- constructor methods.
+           -> Name
            -- ^ @append@ name.
            -> Name
            -- ^ @replicate@ name.
@@ -42,21 +46,72 @@ mkSextable :: (Name -> Type)
            -> Name
            -- ^ @drop@ name.
            -> DecsQ
-mkSextable type' elem' con' append' replicate' map' take' drop' =
+mkSextable type' elem' con' length' append' replicate' map' take' drop' =
   do
     n <- newName "a"
+    i <- newName "i"
     -- Associated types:
     let instances =
           [ TySynInstD ''Elem (TySynEqn [type' n] (elem' n))
-          , DataInstD [] ''Sext [SigT (VarT $ mkName "i") (ConT ''Nat)
+          , DataInstD [] ''Sext [SigT (VarT i) (ConT ''Nat)
                               , type' n]
             [NormalC con' [(NotStrict, type' n)]]
             []
           ]
 
+    -- Produce and expression to convert a type-level natural to Int
+    let tLen lenName =
+          AppE
+          (VarE 'P.fromIntegral)
+          (AppE
+           (VarE 'natVal)
+           (SigE
+            (ConE 'Proxy)
+            (AppT (ConT ''Proxy) (VarT lenName))))
+
     -- Class members
-    let d1 = FunD (mkName "unsafeCreate")
-             [Clause [] (NormalB $ ConE con') []]
+    let d0 = [ FunD (mkName "unsafeCreate")
+               [Clause [] (NormalB $ ConE con') []]
+             ]
+
+    n11 <- newName "i"
+    n12 <- newName "s"
+    n11' <- newName "i"
+    n12' <- newName "s"
+    let d1 =
+          [ SigD 'create $
+            ForallT [KindedTV n11 (ConT ''Nat)]
+            [ClassP ''KnownNat [VarT n11]] $
+            (AppT (AppT ArrowT (type' n))
+              (AppT (ConT ''Maybe)
+                    (AppT (AppT (ConT ''Sext) (VarT n11)) (type' n))))
+          , FunD 'create
+            [Clause [VarP n12]
+             (NormalB $
+              CondE (AppE
+                     (AppE (VarE '(P.==)) (AppE (VarE length') (VarE n12)))
+                     (tLen n11))
+                    (AppE (ConE 'Just) (AppE (ConE con') (VarE n12)))
+                    (ConE 'Nothing))
+             []]
+          , SigD 'create' $
+            ForallT [KindedTV n11' (ConT ''Nat)]
+            [ClassP ''KnownNat [VarT n11']] $
+            (AppT (AppT ArrowT (type' n))
+             (AppT (AppT (ConT ''Sext) (VarT n11')) (type' n)))
+          , FunD 'create'
+            [Clause [VarP n12']
+             (NormalB $
+              CaseE (AppE (VarE 'create) $ VarE n12')
+              [ Match (ConP 'Just [VarP n12'])
+                (NormalB $ VarE n12') []
+              , Match (ConP 'Nothing [])
+                (NormalB $
+                 AppE (VarE 'error)
+                      (LitE $ StringL "create': wrong source string size")) []
+              ])
+             []]
+             ]
 
     n2 <- newName "s"
     let d2 = FunD (mkName "unwrap")
@@ -78,16 +133,6 @@ mkSextable type' elem' con' append' replicate' map' take' drop' =
              [Clause [VarP n41, ConP con' [VarP n42]]
               (f2app map' n41 n42) []
              ]
-
-    -- Produce and expression to convert a type-level natural to Int
-    let tLen lenName =
-          AppE
-          (VarE 'P.fromIntegral)
-          (AppE
-           (VarE 'natVal)
-           (SigE
-            (ConE 'Proxy)
-            (AppT (ConT ''Proxy) (VarT lenName))))
 
     let cutFun method funName = do
          n51 <- newName "s"
@@ -135,7 +180,7 @@ mkSextable type' elem' con' append' replicate' map' take' drop' =
              ]
            ]
 
-    let decs =  instances ++ [d1, d2, d3, d4] ++ d5 ++ d6 ++ d7
+    let decs =  instances ++ d0 ++ d1 ++ [d2, d3, d4] ++ d5 ++ d6 ++ d7
     return [InstanceD [] (AppT (ConT ''Sextable) (type' n)) decs]
 
 
@@ -157,7 +202,7 @@ sext :: LitS -> Q Exp
 sext (LitS s) =
   do
     at <- newName "a"
-    return $ SigE (AppE (VarE (mkName "unsafeCreate")) (LitE $ StringL s))
+    return $ SigE (AppE (VarE 'create') (LitE $ StringL s))
                 (ForallT
                  [PlainTV at]
                  [ ClassP ''IsString [VarT at]

@@ -38,6 +38,7 @@ mkSextable
   (AppT ListT . VarT)
   (VarT)
   (mkName "List")
+  'P.length
   '(P.++)
   'P.replicate
   'P.map
@@ -53,6 +54,7 @@ mkSextable
   (\_ -> ConT ''T.Text)
   (\_ -> ConT ''P.Char)
   (mkName "Text")
+  'T.length
   'T.append
   'textReplicate
   'T.map
@@ -64,6 +66,7 @@ mkSextable
   (\_ -> ConT ''B.ByteString)
   (\_ -> ConT ''Word8)
   (mkName "ByteString")
+  'B.length
   'B.append
   'B.replicate
   'B.map
@@ -75,6 +78,7 @@ mkSextable
   (\_ -> ConT ''LB.ByteString)
   (\_ -> ConT ''Word8)
   (mkName "LazyByteString")
+  'LB.length
   'LB.append
   'LB.replicate
   'LB.map

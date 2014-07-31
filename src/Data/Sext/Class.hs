@@ -24,6 +24,8 @@ class Sextable a where
   type Elem a
   data Sext (i :: Nat) a
 
+  create :: (KnownNat i) => a -> P.Maybe (Sext i a)
+  create' :: (KnownNat i) => a -> Sext i a
   unsafeCreate :: a -> Sext i a
   unwrap :: Sext i a -> a
 
