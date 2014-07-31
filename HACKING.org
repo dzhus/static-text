@@ -1,5 +1,4 @@
-* sext, lists with statically encoded length
-
+* sext: lists, Texts, ByteStrings with statically encoded length
 ** Goals
    We need a set of combinators to build strings/lists which support
    static length-checking.
@@ -34,11 +33,12 @@
    Type safety is provided by means of an associated type Sext.
    Sextable methods map basic type operations over this wrapper.
 
-** Lists/strings
+** Generating instances for [a]
    Strings are lists, so we also provide instances for [a] type.
-   mkSext TH macro provides a single unique name which can be supplied
-   to container/element type generators. This can be used to generate
-   instances for list and other Functor unary types.
+
+   mkSextable TH macro provides a single unique name which can be
+   supplied to container/element type generators. This can be used to
+   generate instances for list and other Functor unary types.
 
 ** String literals
    We want to be able to include sext values in our programs in the
@@ -59,3 +59,8 @@
    it would expand to this:
 
    : Sext "Foobar" :: Sext 6 a
+
+   where a is a type variable restricted to instances of both Sextable
+   and IsString. Actual literal length is encoded in the type of the
+   produced expression. We use untyped Template Haskell since types
+   cannot be spliced.
