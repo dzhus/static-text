@@ -45,4 +45,4 @@
 
    it would expand to this:
 
-   : Sext "Foobar" :: Sext 6
+   : Sext "Foobar" :: Sext 6 a

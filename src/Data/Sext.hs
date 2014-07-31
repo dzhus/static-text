@@ -29,7 +29,7 @@ import           Data.Sext.Class
 import           Data.Sext.TH
 
 
-mkSext
+mkSextable
   (AppT ListT . VarT)
   (VarT)
   (mkName "List")
@@ -44,7 +44,7 @@ textReplicate :: P.Int -> P.Char -> T.Text
 textReplicate n c = T.replicate n $ T.singleton c
 
 
-mkSext
+mkSextable
   (\_ -> ConT ''T.Text)
   (\_ -> ConT ''P.Char)
   (mkName "Text")

@@ -22,33 +22,33 @@ import           GHC.TypeLits
 
 class Sextable a where
   type Elem a
-  data SC (i :: Nat) a
+  data Sext (i :: Nat) a
 
-  unsafeCreate :: a -> SC i a
-  unwrap :: SC i a -> a
+  unsafeCreate :: a -> Sext i a
+  unwrap :: Sext i a -> a
 
-  append :: SC m a -> SC n a -> SC (m + n) a
-  replicate :: KnownNat m => Elem a -> SC m a
-  map :: (Elem a -> Elem a) -> SC m a -> SC m a
+  append :: Sext m a -> Sext n a -> Sext (m + n) a
+  replicate :: KnownNat m => Elem a -> Sext m a
+  map :: (Elem a -> Elem a) -> Sext m a -> Sext m a
 
-  take :: (KnownNat m, KnownNat n, P.True ~ (<=?) n m) => SC m a -> SC n a
-  drop :: (KnownNat m, KnownNat n, P.True ~ (<=?) n m) => SC m a -> SC n a
+  take :: (KnownNat m, KnownNat n, P.True ~ (<=?) n m) => Sext m a -> Sext n a
+  drop :: (KnownNat m, KnownNat n, P.True ~ (<=?) n m) => Sext m a -> Sext n a
 
 
 length :: forall a m.
-          KnownNat m => SC m a -> P.Int
+          KnownNat m => Sext m a -> P.Int
 length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
 
 
 padLeft :: forall a m n.
            (Sextable a, KnownNat m, KnownNat (n - m),
             n ~ (n - m + m), m <= n) =>
-           Elem a -> SC m a -> SC n a
+           Elem a -> Sext m a -> Sext n a
 padLeft pad = append (replicate pad)
 
 
 padRight :: forall a m n.
            (Sextable a, KnownNat m, KnownNat (n - m),
             n ~ (m + (n - m)), m <= n) =>
-           Elem a -> SC m a -> SC n a
+           Elem a -> Sext m a -> Sext n a
 padRight pad = P.flip append (replicate pad)

@@ -1,6 +1,11 @@
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Data.Sext.TH (mkSext)
+module Data.Sext.TH (mkSextable)
 
 where
 
@@ -8,30 +13,39 @@ import           Prelude as P
 
 import           Data.Proxy
 import           Data.Sext.Class
+import           Data.String
 
 import           GHC.TypeLits
 
 import           Language.Haskell.TH
 
 
-mkSext :: (Name -> Type)
-       -- ^ Underlying type generator.
-       -> (Name -> Type)
-       -- ^ Element type generator. (For @[a]@, this is @a@)
-       -> Name
-       -- ^ Constructor name.
-       -> Name
-       -> Name
-       -> Name
-       -> Name
-       -> Name
-       -> DecsQ
-mkSext type' elem' con' append' replicate' map' take' drop' =
+mkSextable :: (Name -> Type)
+           -- ^ Underlying type generator. It may be a unary type
+           -- constructor, but you can also ignore the name produced.
+           -> (Name -> Type)
+           -- ^ Element type generator (for @[a]@, this is @a@). The
+           -- name supplied is the same as in first argument.
+           -> Name
+           -- ^ Constructor name.
+           -> Name
+           -- ^ @append@ name.
+           -> Name
+           -- ^ @replicate@ name.
+           -> Name
+           -- ^ @map@ name.
+           -> Name
+           -- ^ @take@ name.
+           -> Name
+           -- ^ @drop@ name.
+           -> DecsQ
+mkSextable type' elem' con' append' replicate' map' take' drop' =
   do
     n <- newName "a"
+    -- Associated types:
     let instances =
           [ TySynInstD ''Elem (TySynEqn [type' n] (elem' n))
-          , DataInstD [] ''SC [SigT (VarT $ mkName "i") (ConT ''Nat)
+          , DataInstD [] ''Sext [SigT (VarT $ mkName "i") (ConT ''Nat)
                               , type' n]
             [NormalC con' [(NotStrict, type' n)]]
             []
@@ -84,8 +98,8 @@ mkSext type' elem' con' append' replicate' map' take' drop' =
              , EqualP (ConT 'True)
                (AppT (AppT (ConT ''(<=?)) (VarT n53)) (VarT n52))
              ] $
-             AppT (AppT ArrowT (AppT (AppT (ConT ''SC) (VarT n52)) (type' n)))
-             (AppT (AppT (ConT ''SC) (VarT n53)) (type' n))
+             AppT (AppT ArrowT (AppT (AppT (ConT ''Sext) (VarT n52)) (type' n)))
+             (AppT (AppT (ConT ''Sext) (VarT n53)) (type' n))
            , FunD (mkName method)
              [ Clause
                [(ConP con' [VarP n51])]
@@ -107,7 +121,7 @@ mkSext type' elem' con' append' replicate' map' take' drop' =
              [ ClassP ''KnownNat [VarT n72]
              ] $
              AppT (AppT ArrowT (AppT (ConT ''Elem) (type' n)))
-             (AppT (AppT (ConT ''SC) (VarT n72)) (type' n))
+             (AppT (AppT (ConT ''Sext) (VarT n72)) (type' n))
            , FunD (mkName "replicate")
              [ Clause
                [VarP n71]
