@@ -33,7 +33,7 @@ library
 
   if flag(text)
     build-depends:
-      text >=1.1 && <1.2
+      text           >=1.1 && <1.2
 
   ghc-options: -Wall
   hs-source-dirs:      src

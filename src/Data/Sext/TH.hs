@@ -5,7 +5,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-module Data.Sext.TH (mkSextable)
+module Data.Sext.TH
+       ( mkSextable
+       , sext
+       )
 
 where
 
@@ -134,3 +137,33 @@ mkSextable type' elem' con' append' replicate' map' take' drop' =
 
     let decs =  instances ++ [d1, d2, d3, d4] ++ d5 ++ d6 ++ d7
     return [InstanceD [] (AppT (ConT ''Sextable) (type' n)) decs]
+
+
+-- | A type with IsString instance to allow string literals in 'sext'
+-- argument without quoting.
+newtype LitS = LitS String deriving IsString
+
+
+-- | Type-safe Sext constructor macro for string literals.
+--
+-- Example:
+--
+-- > $(sext "Foobar")
+--
+-- compiles to
+--
+-- > unsafeCreate "Foobar" :: forall a. (IsString a, Sextable a) => Sext 6 a
+sext :: LitS -> Q Exp
+sext (LitS s) =
+  do
+    at <- newName "a"
+    return $ SigE (AppE (VarE (mkName "unsafeCreate")) (LitE $ StringL s))
+                (ForallT
+                 [PlainTV at]
+                 [ ClassP ''IsString [VarT at]
+                 , ClassP ''Sextable [VarT at]] $
+                 (AppT
+                  (AppT
+                   (ConT ''Sext)
+                   (LitT $ NumTyLit (fromIntegral $ P.length s)))
+                  (VarT at)))

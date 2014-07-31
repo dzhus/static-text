@@ -14,6 +14,7 @@ module Data.Sext
        , length
        , padLeft
        , padRight
+       , sext
        )
 
 where

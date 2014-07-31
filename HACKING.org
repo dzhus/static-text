@@ -1,11 +1,13 @@
-* sext, Text with statically encoded length
+* sext, lists with statically encoded length
 
 ** Goals
-   We need a set of combinators to build strings which support
-   statically length-checking. Sext is a string-like datatype with
-   length encoded in its type. We'd also like to support several of
-   concrete representations for strings like Text or ByteString so
-   that an appropriate type may be used when a problem demands it.
+   We need a set of combinators to build strings/lists which support
+   static length-checking.
+
+   Sext is a list-like datatype with length encoded in its type. We'd
+   also like to support several of concrete representations for
+   strings like Text or ByteString so that an appropriate type may be
+   used when a problem demands it.
 
    We also want to support native GHC type-level natural numbers
    (provided by GHC.TypeLits) to encode length instead of any other
@@ -16,16 +18,27 @@
 
    The library must introduce as little run-time overhead as possible.
    Thus we aim to implement a thin type-level wrapper over operations
-   already provided by representation types.
+   already provided by representation types. Operations like take or
+   drop still require run-time access to type information (in form of
+   Nat singletons representing container size).
 
-** Text/ByteString support
-   Text and ByteString types both support a set of common operations
-   which are lifted to sext combinators using Sexty class which
-   abstracts over concrete representation.
+** Sextable class
+   Sextable class maps operations for concrete types over constructor.
+   Combinators are polymorphic and support any instance of Sextable
+   class:
 
-*** ByteString
-    We support various flavours of ByteString by using common
-    interface provided in bytestring package
+   - lists
+   - Text
+   - ByteString
+
+   Type safety is provided by means of an associated type Sext.
+   Sextable methods map basic type operations over this wrapper.
+
+** Lists/strings
+   Strings are lists, so we also provide instances for [a] type.
+   mkSext TH macro provides a single unique name which can be supplied
+   to container/element type generators. This can be used to generate
+   instances for list and other Functor unary types.
 
 ** String literals
    We want to be able to include sext values in our programs in the
