@@ -31,6 +31,10 @@ library
     base             >=4.7 && <4.8,
     template-haskell
 
+  if flag(bytestring)
+    build-depends:
+      bytestring     >=0.10 && <0.11
+
   if flag(text)
     build-depends:
       text           >=1.1 && <1.2

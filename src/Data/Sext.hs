@@ -22,7 +22,11 @@ where
 import           Prelude (($), (.))
 import qualified Prelude as P
 
+import qualified Data.ByteString as B
+import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text as T
+
+import           GHC.Word
 
 import           Language.Haskell.TH
 
@@ -54,3 +58,25 @@ mkSextable
   'T.map
   'T.take
   'T.drop
+
+
+mkSextable
+  (\_ -> ConT ''B.ByteString)
+  (\_ -> ConT ''Word8)
+  (mkName "ByteString")
+  'B.append
+  'B.replicate
+  'B.map
+  'B.take
+  'B.drop
+
+
+mkSextable
+  (\_ -> ConT ''LB.ByteString)
+  (\_ -> ConT ''Word8)
+  (mkName "LazyByteString")
+  'LB.append
+  'LB.replicate
+  'LB.map
+  'LB.take
+  'LB.drop
