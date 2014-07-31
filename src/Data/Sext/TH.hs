@@ -12,8 +12,8 @@ module Data.Sext.TH
 
 where
 
-import           Prelude as P hiding (length)
-import qualified Prelude as P (length)
+import           Prelude (($), (==), (++), Bool(..), Maybe(..), error, return)
+import qualified Prelude as P (fromIntegral, length)
 
 import           Data.Proxy
 import           Data.Sext.Class
@@ -70,7 +70,7 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
             (AppT (ConT ''Proxy) (VarT lenName))))
 
     -- Class members
-    let d0 = [ FunD (mkName "unsafeCreate")
+    let d0 = [ FunD 'unsafeCreate
                [Clause [] (NormalB $ ConE con') []]
              ]
 
@@ -89,7 +89,7 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
             [Clause [VarP n12]
              (NormalB $
               CondE (AppE
-                     (AppE (VarE '(P.==)) (AppE (VarE length') (VarE n12)))
+                     (AppE (VarE '(==)) (AppE (VarE length') (VarE n12)))
                      (tLen n11))
                     (AppE (ConE 'Just) (AppE (ConE con') (VarE n12)))
                     (ConE 'Nothing))
@@ -114,7 +114,7 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
              ]
 
     n2 <- newName "s"
-    let d2 = FunD (mkName "unwrap")
+    let d2 = FunD 'unwrap
              [Clause [ConP con' [VarP n2]] (NormalB $ VarE n2) []]
 
     let f2app f a b =
@@ -122,14 +122,14 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
 
     n31 <- newName "a"
     n32 <- newName "b"
-    let d3 = FunD (mkName "append")
+    let d3 = FunD 'append
              [Clause [ConP con' [VarP n31], ConP con' [VarP n32]]
               (f2app append' n31 n32) []
              ]
 
     n41 <- newName "f"
     n42 <- newName "s"
-    let d4 = FunD (mkName "map")
+    let d4 = FunD 'map
              [Clause [VarP n41, ConP con' [VarP n42]]
               (f2app map' n41 n42) []
              ]
@@ -139,7 +139,7 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
          n52 <- newName "m"
          n53 <- newName "n"
          return $
-           [ SigD (mkName method) $
+           [ SigD method $
              ForallT [PlainTV n52, PlainTV n53]
              [ ClassP ''KnownNat [VarT n52]
              , ClassP ''KnownNat [VarT n53]
@@ -148,7 +148,7 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
              ] $
              AppT (AppT ArrowT (AppT (AppT (ConT ''Sext) (VarT n52)) (type' n)))
              (AppT (AppT (ConT ''Sext) (VarT n53)) (type' n))
-           , FunD (mkName method)
+           , FunD method
              [ Clause
                [(ConP con' [VarP n51])]
                (NormalB $
@@ -158,8 +158,8 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
              ]
            ]
 
-    d5 <- cutFun "take" take'
-    d6 <- cutFun "drop" drop'
+    d5 <- cutFun 'take take'
+    d6 <- cutFun 'drop drop'
 
     n71 <- newName "c"
     n72 <- newName "m"
@@ -210,5 +210,5 @@ sext (LitS s) =
                  (AppT
                   (AppT
                    (ConT ''Sext)
-                   (LitT $ NumTyLit (fromIntegral $ P.length s)))
+                   (LitT $ NumTyLit (P.fromIntegral $ P.length s)))
                   (VarT at)))
