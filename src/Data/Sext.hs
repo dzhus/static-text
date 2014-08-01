@@ -28,12 +28,33 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as LB
 import qualified Data.Text as T
 
+import           GHC.TypeLits
 import           GHC.Word
 
 import           Language.Haskell.TH
 
+import           Data.Proxy
 import           Data.Sext.Class
 import           Data.Sext.TH
+
+
+length :: forall a m.
+          KnownNat m => Sext m a -> P.Int
+length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
+
+
+padLeft :: forall a m n.
+           (Sextable a, KnownNat m, KnownNat (n - m),
+            n ~ (n - m + m), m <= n) =>
+           Elem a -> Sext m a -> Sext n a
+padLeft pad = append (replicate pad)
+
+
+padRight :: forall a m n.
+           (Sextable a, KnownNat m, KnownNat (n - m),
+            n ~ (m + (n - m)), m <= n) =>
+           Elem a -> Sext m a -> Sext n a
+padRight pad = P.flip append (replicate pad)
 
 
 mkSextable

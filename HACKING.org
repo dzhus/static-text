@@ -69,11 +69,19 @@
    and IsString. Actual literal length is encoded in the type of the
    produced expression. We use untyped Template Haskell since types
    cannot be spliced.
+** Constructing Sexts
 
    We also provide create, create' and unsafeCreate methods in
    Sextable class to enable interfacing Sext with run-time IO sources.
    They do not provide as much compile-time safety as the sext macro
-   does.
+   does. create' is not total and create induces an extra run-time
+   check.
+
+   If we combine (untyped) create, take and padLeft we can define a
+   type-safe constructor for producing (Sext n) from source strings of
+   length m. If m > n, then we drop extra characters. If m < n, we pad
+   source up to target length. This needs to be done before wrapping
+   the obtained string in Sext constructor.
 
 ** Type ambiguity
 
