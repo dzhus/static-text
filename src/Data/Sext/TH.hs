@@ -1,9 +1,15 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 
+{-|
+
+Template Haskell helpers for Sext.
+
+-}
+
 module Data.Sext.TH
-       ( mkSextable
-       , sext
+       ( sext
+       , mkSextable
        )
 
 where
@@ -20,27 +26,46 @@ import           GHC.TypeLits
 import           Language.Haskell.TH
 
 
+-- | Generate 'Sextable' instance for a type (@s@) using the provided
+-- names of basic operations for the type. Types of the provided
+-- functions must follow conventions set by standard Haskell list
+-- functions.
+--
+-- This macro is used to produce all bundled instances of Sextable.
+-- For example, an instance for lists is generated using standard
+-- Prelude functions as follows:
+--
+-- > mkSextable
+-- > (AppT ListT . VarT)
+-- > (VarT)
+-- > (mkName "List")
+-- > 'length
+-- > '(++)
+-- > 'replicate
+-- > 'map
+-- > 'take
+-- > 'drop
 mkSextable :: (Name -> Type)
            -- ^ Underlying type generator. It may be a unary type
            -- constructor, but you may also ignore the name produced.
            -> (Name -> Type)
            -- ^ Element type generator (for @[a]@, this is @a@). The
-           -- name supplied is the same as in first argument.
+           -- name supplied is the same as in the first argument.
            -> Name
-           -- ^ Constructor name.
+           -- ^ Constructor name for 'Sext' data family.
            -> Name
-           -- ^ @length@ name. Used only for run-time length checks in
-           -- constructor methods.
+           -- ^ @length :: s -> Int@. Used only for run-time length
+           -- checks in constructor methods.
            -> Name
-           -- ^ @append@ name.
+           -- ^ @append :: s -> s -> s@.
            -> Name
-           -- ^ @replicate@ name.
+           -- ^ @replicate :: Int -> Elem s -> s@.
            -> Name
-           -- ^ @map@ name.
+           -- ^ @map :: (Elem a -> Elem a) -> s -> s@.
            -> Name
-           -- ^ @take@ name.
+           -- ^ @take :: Int -> s -> s@.
            -> Name
-           -- ^ @drop@ name.
+           -- ^ @drop :: Int -> s -> s@.
            -> DecsQ
 mkSextable type' elem' con' length' append' replicate' map' take' drop' =
   do
@@ -134,7 +159,8 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
           , EqualP (ConT 'True)
             (AppT (AppT (ConT ''(<=?)) (VarT toSize)) (VarT fromSize))
           ] $
-          AppT (AppT ArrowT (AppT (AppT (ConT ''Sext) (VarT fromSize)) (type' n)))
+          AppT (AppT ArrowT
+                (AppT (AppT (ConT ''Sext) (VarT fromSize)) (type' n)))
           (AppT (AppT (ConT ''Sext) (VarT toSize)) (type' n))
 
     -- take
@@ -282,6 +308,8 @@ newtype LitS = LitS String deriving IsString
 -- compiles to
 --
 -- > unsafeCreate "Foobar" :: forall a. (IsString a, Sextable a) => Sext 6 a
+--
+-- where 6 is the string length obtained at compile time.
 sext :: LitS -> Q Exp
 sext (LitS s) =
   do
