@@ -130,32 +130,54 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
             []
           ]
 
-    let cutFun method funName = do
-         n51 <- newName "s"
-         n52 <- newName "m"
-         n53 <- newName "n"
-         return $
-           [ SigD method $
-             ForallT [PlainTV n52, PlainTV n53]
-             [ ClassP ''KnownNat [VarT n52]
-             , ClassP ''KnownNat [VarT n53]
-             , EqualP (ConT 'True)
-               (AppT (AppT (ConT ''(<=?)) (VarT n53)) (VarT n52))
-             ] $
-             AppT (AppT ArrowT (AppT (AppT (ConT ''Sext) (VarT n52)) (type' n)))
-             (AppT (AppT (ConT ''Sext) (VarT n53)) (type' n))
-           , FunD method
-             [ Clause
-               [(ConP con' [VarP n51])]
-               (NormalB $
-                AppE (ConE con') $
-                AppE (AppE (VarE funName) (tLen n53))
-                (VarE n51)) []
-             ]
-           ]
+    let cutSig fName fromSize toSize=
+          SigD fName $
+          ForallT [PlainTV fromSize, PlainTV toSize]
+          [ ClassP ''KnownNat [VarT fromSize]
+          , ClassP ''KnownNat [VarT toSize]
+          , EqualP (ConT 'True)
+            (AppT (AppT (ConT ''(<=?)) (VarT toSize)) (VarT fromSize))
+          ] $
+          AppT (AppT ArrowT (AppT (AppT (ConT ''Sext) (VarT fromSize)) (type' n)))
+          (AppT (AppT (ConT ''Sext) (VarT toSize)) (type' n))
 
-    takeD <- cutFun 'take take'
-    dropD <- cutFun 'drop drop'
+    -- take
+    a51 <- newName "s"
+    t51 <- newName "m"
+    t52 <- newName "n"
+    e5 <- [e|
+           $(conE con') $
+           $(varE take') $(return $ tLen t52) $(varE a51)
+          |]
+    let takeD =
+          [ cutSig 'take t51 t52
+          , FunD 'take
+            [ Clause
+              [(ConP con' [VarP a51])]
+              (NormalB e5)
+              []
+            ]
+          ]
+
+    -- drop
+    a51' <- newName "s"
+    t51' <- newName "m"
+    t52' <- newName "n"
+    e5' <- [e|
+           $(conE con') $
+           $(varE drop')
+           ($(varE length') $(varE a51') - $(return $ tLen t52'))
+           $(varE a51')
+          |]
+    let dropD =
+          [ cutSig 'drop t51' t52'
+          , FunD 'drop
+            [ Clause
+              [(ConP con' [VarP a51'])]
+              (NormalB e5')
+              []
+            ]
+          ]
 
     n71 <- newName "c"
     n72 <- newName "m"
