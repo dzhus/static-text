@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
@@ -21,15 +22,19 @@ module Data.Sext
 
 where
 
-import           Prelude (($), (.))
 import qualified Prelude as P
 
+#ifdef WITH_BS
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as LB
+import           GHC.Word
+#endif
+
+#ifdef WITH_TEXT
 import qualified Data.Text as T
+#endif
 
 import           GHC.TypeLits
-import           GHC.Word
 
 import           Language.Haskell.TH
 
@@ -58,7 +63,7 @@ padRight pad = P.flip append (replicate pad)
 
 
 mkSextable
-  (AppT ListT . VarT)
+  (AppT ListT P.. VarT)
   (VarT)
   (mkName "List")
   'P.length
@@ -69,8 +74,9 @@ mkSextable
   'P.drop
 
 
+#ifdef WITH_TEXT
 textReplicate :: P.Int -> P.Char -> T.Text
-textReplicate n c = T.replicate n $ T.singleton c
+textReplicate n c = T.replicate n P.$ T.singleton c
 
 
 mkSextable
@@ -83,8 +89,9 @@ mkSextable
   'T.map
   'T.take
   'T.drop
+#endif
 
-
+#ifdef WITH_BS
 mkSextable
   (\_ -> ConT ''B.ByteString)
   (\_ -> ConT ''Word8)
@@ -107,3 +114,4 @@ mkSextable
   'LB.map
   'LB.take
   'LB.drop
+#endif

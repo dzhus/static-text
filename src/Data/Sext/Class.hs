@@ -13,8 +13,6 @@ where
 
 import qualified Prelude as P
 
-import           Data.Proxy
-
 import           GHC.TypeLits
 
 

@@ -33,10 +33,12 @@ library
     template-haskell
 
   if flag(bytestring)
+    cpp-options: -DWITH_BS
     build-depends:
       bytestring     >=0.10 && <0.11
 
   if flag(text)
+    cpp-options: -DWITH_TEXT
     build-depends:
       text           >=1.1 && <1.2
 
