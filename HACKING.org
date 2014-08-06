@@ -33,15 +33,16 @@
    Type safety is provided by means of an associated type Sext.
    Sextable methods map basic type operations over this wrapper.
 
-** Generating instances for Sextable
-   Strings are lists, so we also provide instances for [a] type.
+*** Generating instances for Sextable
+    Strings are lists, so we also provide instances for [a] type.
 
-   mkSextable TH macro provides a single unique name which can be
-   supplied to container/element type generators. This can be used to
-   generate instances for list and other Functor unary types.
+    mkSextable TH macro provides a single unique name which can be
+    supplied to container/element type generators. This can be used to
+    generate instances for list and other Functor unary types.
 
-   Methods definitions are built without any quoting: associated type
-   constructor name would need to be spliced (which is impossible).
+    Methods definitions are built without any quoting (unless we reuse
+    unsafeCreate): associated type constructor name would need to be
+    spliced (which is impossible).
 
 ** String literals
    We want to be able to include sext values in our programs in the
@@ -69,19 +70,21 @@
    and IsString. Actual literal length is encoded in the type of the
    produced expression. We use untyped Template Haskell since types
    cannot be spliced.
+
 ** Constructing Sexts
 
-   We also provide create, create' and unsafeCreate methods in
-   Sextable class to enable interfacing Sext with run-time IO sources.
-   They do not provide as much compile-time safety as the sext macro
-   does. create' is not total and create induces an extra run-time
-   check.
+   We also provide create and unsafeCreate methods in Sextable class
+   to enable interfacing Sext with run-time IO sources. They do not
+   provide as much compile-time safety as the sext macro does. create
+   induces an extra run-time check while unsafeCreate simply applies
+   the constructor to any source value.
 
    If we combine (untyped) create, take and padLeft we can define a
    type-safe constructor for producing (Sext n) from source strings of
    length m. If m > n, then we drop extra characters. If m < n, we pad
    source up to target length. This needs to be done before wrapping
-   the obtained string in Sext constructor.
+   the obtained string in Sext constructor. createLeft/createRight
+   implement this approach.
 
 ** Type ambiguity
 
@@ -91,3 +94,8 @@
 
    won't typecheck. Both combinators have no knowledge about the exact
    amount characters which need to be dropped/added to sext.
+
+** Solver limitations
+
+   Currently GHC solver cannot deduce that ((n + m) - m) ~ n, thus we
+   encode it in method signatures.

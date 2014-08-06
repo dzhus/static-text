@@ -12,7 +12,7 @@ module Data.Sext.TH
 
 where
 
-import           Prelude (($), (==), (++), Bool(..), Maybe(..), error, return)
+import           Prelude (($), (==), (-), (++), Bool(..), Maybe(..), return)
 import qualified Prelude as P (fromIntegral, length)
 
 import           Data.Proxy
@@ -49,17 +49,17 @@ mkSextable :: (Name -> Type)
 mkSextable type' elem' con' length' append' replicate' map' take' drop' =
   do
     n <- newName "a"
-    i <- newName "i"
-    -- Associated types:
+    t0 <- newName "i"
+    -- Associated types
     let instances =
           [ TySynInstD ''Elem (TySynEqn [type' n] (elem' n))
-          , DataInstD [] ''Sext [SigT (VarT i) (ConT ''Nat)
+          , DataInstD [] ''Sext [SigT (VarT t0) (ConT ''Nat)
                               , type' n]
             [NormalC con' [(NotStrict, type' n)]]
             []
           ]
 
-    -- Produce and expression to convert a type-level natural to Int
+    -- Produce an expression to convert a type-level natural to Int
     let tLen lenName =
           AppE
           (VarE 'P.fromIntegral)
@@ -69,70 +69,62 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
             (ConE 'Proxy)
             (AppT (ConT ''Proxy) (VarT lenName))))
 
-    -- Class members
-    let d0 = [ FunD 'unsafeCreate
-               [Clause [] (NormalB $ ConE con') []]
-             ]
+    -- unsafeCreate
+    let uCreateD =
+          [FunD 'unsafeCreate [Clause [] (NormalB $ ConE con') []]]
 
-    n11 <- newName "i"
-    n12 <- newName "s"
-    n11' <- newName "i"
-    n12' <- newName "s"
-    let d1 =
+    -- create
+    t1 <- newName "i"
+    a1 <- newName "s"
+    let createD =
           [ SigD 'create $
-            ForallT [KindedTV n11 (ConT ''Nat)]
-            [ClassP ''KnownNat [VarT n11]] $
+            ForallT [KindedTV t1 (ConT ''Nat)]
+            [ClassP ''KnownNat [VarT t1]] $
             (AppT (AppT ArrowT (type' n))
               (AppT (ConT ''Maybe)
-                    (AppT (AppT (ConT ''Sext) (VarT n11)) (type' n))))
+                    (AppT (AppT (ConT ''Sext) (VarT t1)) (type' n))))
           , FunD 'create
-            [Clause [VarP n12]
+            [Clause [VarP a1]
              (NormalB $
               CondE (AppE
-                     (AppE (VarE '(==)) (AppE (VarE length') (VarE n12)))
-                     (tLen n11))
-                    (AppE (ConE 'Just) (AppE (ConE con') (VarE n12)))
+                     (AppE (VarE '(==)) (AppE (VarE length') (VarE a1)))
+                     (tLen t1))
+                    (AppE (ConE 'Just) (AppE (ConE con') (VarE a1)))
                     (ConE 'Nothing))
              []]
-          , SigD 'create' $
-            ForallT [KindedTV n11' (ConT ''Nat)]
-            [ClassP ''KnownNat [VarT n11']] $
-            (AppT (AppT ArrowT (type' n))
-             (AppT (AppT (ConT ''Sext) (VarT n11')) (type' n)))
-          , FunD 'create'
-            [Clause [VarP n12']
-             (NormalB $
-              CaseE (AppE (VarE 'create) $ VarE n12')
-              [ Match (ConP 'Just [VarP n12'])
-                (NormalB $ VarE n12') []
-              , Match (ConP 'Nothing [])
-                (NormalB $
-                 AppE (VarE 'error)
-                      (LitE $ StringL "create': wrong source string size")) []
-              ])
-             []]
-             ]
+          ]
 
-    n2 <- newName "s"
-    let d2 = FunD 'unwrap
-             [Clause [ConP con' [VarP n2]] (NormalB $ VarE n2) []]
+    -- unwrap
+    a2 <- newName "s"
+    let unwrapD =
+          FunD 'unwrap
+          [Clause [ConP con' [VarP a2]] (NormalB $ VarE a2) []]
 
+    -- 2-arg function application wrapped in the constructor
     let f2app f a b =
           NormalB $ AppE (ConE con') (AppE (AppE (VarE f) (VarE a)) (VarE b))
 
-    n31 <- newName "a"
-    n32 <- newName "b"
-    let d3 = FunD 'append
-             [Clause [ConP con' [VarP n31], ConP con' [VarP n32]]
-              (f2app append' n31 n32) []
-             ]
+    -- append
+    a31 <- newName "a"
+    a32 <- newName "b"
+    let appendD =
+          FunD 'append
+          [ Clause
+            [ConP con' [VarP a31], ConP con' [VarP a32]]
+            (f2app append' a31 a32)
+            []
+          ]
 
-    n41 <- newName "f"
-    n42 <- newName "s"
-    let d4 = FunD 'map
-             [Clause [VarP n41, ConP con' [VarP n42]]
-              (f2app map' n41 n42) []
-             ]
+    -- map
+    a41 <- newName "f"
+    a42 <- newName "s"
+    let mapD =
+          FunD 'map
+          [ Clause
+            [VarP a41, ConP con' [VarP a42]]
+            (f2app map' a41 a42)
+            []
+          ]
 
     let cutFun method funName = do
          n51 <- newName "s"
@@ -158,12 +150,12 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
              ]
            ]
 
-    d5 <- cutFun 'take take'
-    d6 <- cutFun 'drop drop'
+    takeD <- cutFun 'take take'
+    dropD <- cutFun 'drop drop'
 
     n71 <- newName "c"
     n72 <- newName "m"
-    let d7 =
+    let replicateD =
            [ SigD (mkName "replicate") $
              ForallT [PlainTV n72]
              [ ClassP ''KnownNat [VarT n72]
@@ -180,7 +172,75 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
              ]
            ]
 
-    let decs =  instances ++ d0 ++ d1 ++ [d2, d3, d4] ++ d5 ++ d6 ++ d7
+    -- createX signature
+    let crSig fName sizeName =
+          SigD fName $
+          ForallT [KindedTV sizeName (ConT ''Nat)]
+          [ClassP ''KnownNat [VarT sizeName]] $
+          AppT
+          (AppT ArrowT (AppT (ConT ''Elem) (type' n)))
+          (AppT (AppT ArrowT (type' n))
+           (AppT
+            (AppT (ConT ''Sext) (VarT sizeName)) (type' n)))
+
+    -- createLeft
+    t8 <- newName "i"
+    a81 <- newName "e"
+    a82 <- newName "s"
+    e8 <- [e|
+           let
+             t = P.fromIntegral $ natVal (Proxy :: Proxy $(varT t8))
+             l = $(varE length') $(varE a82)
+           in
+             unsafeCreate $
+             $(varE take') t $
+             $(varE append') $(varE a82) $
+             $(varE replicate') (t - l) $(varE a81)
+           |]
+    let crLeftD =
+          [ crSig 'createLeft t8
+          , FunD 'createLeft
+            [ Clause
+              [VarP a81, VarP a82]
+              (NormalB $ e8)
+              []
+            ]
+          ]
+
+    -- createRight
+    t9 <- newName "i"
+    a91 <- newName "e"
+    a92 <- newName "s"
+    e9 <- [e|
+           let
+             t = P.fromIntegral $ natVal (Proxy :: Proxy $(varT t9))
+             l = $(varE length') $(varE a92)
+           in
+             unsafeCreate $
+             $(varE drop') (l - t) $
+             $(varE append')
+             ($(varE replicate') (t - l) $(varE a91))
+             $(varE a92)
+           |]
+    let crRightD =
+          [ crSig 'createRight t9
+          , FunD 'createRight
+            [ Clause
+              [VarP a91, VarP a92]
+              (NormalB $ e9)
+              []
+            ]
+          ]
+
+    let decs = instances ++
+               crLeftD ++
+               crRightD ++
+               createD ++
+               uCreateD ++
+               [unwrapD, appendD, mapD] ++
+               takeD ++
+               dropD ++
+               replicateD
     return [InstanceD [] (AppT (ConT ''Sextable) (type' n)) decs]
 
 
@@ -202,7 +262,7 @@ sext :: LitS -> Q Exp
 sext (LitS s) =
   do
     at <- newName "a"
-    return $ SigE (AppE (VarE 'create') (LitE $ StringL s))
+    return $ SigE (AppE (VarE 'unsafeCreate) (LitE $ StringL s))
                 (ForallT
                  [PlainTV at]
                  [ ClassP ''IsString [VarT at]
