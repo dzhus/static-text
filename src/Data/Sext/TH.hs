@@ -26,7 +26,7 @@ import           Language.Haskell.TH
 
 mkSextable :: (Name -> Type)
            -- ^ Underlying type generator. It may be a unary type
-           -- constructor, but you can also ignore the name produced.
+           -- constructor, but you may also ignore the name produced.
            -> (Name -> Type)
            -- ^ Element type generator (for @[a]@, this is @a@). The
            -- name supplied is the same as in first argument.
@@ -48,9 +48,11 @@ mkSextable :: (Name -> Type)
            -> DecsQ
 mkSextable type' elem' con' length' append' replicate' map' take' drop' =
   do
+    -- Type variable possibly used by type constructor (type')
     n <- newName "a"
-    t0 <- newName "i"
+
     -- Associated types
+    t0 <- newName "i"
     let instances =
           [ TySynInstD ''Elem (TySynEqn [type' n] (elem' n))
           , DataInstD [] ''Sext [SigT (VarT t0) (ConT ''Nat)
@@ -76,6 +78,11 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
     -- create
     t1 <- newName "i"
     a1 <- newName "s"
+    e1 <- [e|
+           if $(varE length') $(varE a1) == $(return $ tLen t1)
+           then Just ($(conE con') $(varE a1))
+           else Nothing
+          |]
     let createD =
           [ SigD 'create $
             ForallT [KindedTV t1 (ConT ''Nat)]
@@ -84,14 +91,11 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
               (AppT (ConT ''Maybe)
                     (AppT (AppT (ConT ''Sext) (VarT t1)) (type' n))))
           , FunD 'create
-            [Clause [VarP a1]
-             (NormalB $
-              CondE (AppE
-                     (AppE (VarE '(==)) (AppE (VarE length') (VarE a1)))
-                     (tLen t1))
-                    (AppE (ConE 'Just) (AppE (ConE con') (VarE a1)))
-                    (ConE 'Nothing))
-             []]
+            [ Clause
+              [VarP a1]
+              (NormalB e1)
+              []
+            ]
           ]
 
     -- unwrap
@@ -155,6 +159,10 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
 
     n71 <- newName "c"
     n72 <- newName "m"
+    e7 <- [e|
+           unsafeCreate $
+           $(varE replicate') $(return $ tLen n72) $(varE n71)
+          |]
     let replicateD =
            [ SigD (mkName "replicate") $
              ForallT [PlainTV n72]
@@ -165,10 +173,8 @@ mkSextable type' elem' con' length' append' replicate' map' take' drop' =
            , FunD (mkName "replicate")
              [ Clause
                [VarP n71]
-               (NormalB $
-                AppE (ConE con') $
-                AppE (AppE (VarE replicate') (tLen n72))
-                (VarE n71)) []
+               (NormalB e7)
+               []
              ]
            ]
 
