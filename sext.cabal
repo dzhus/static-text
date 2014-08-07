@@ -23,10 +23,8 @@ flag bytestring
 library
   exposed-modules:
     Data.Sext,
+    Data.Sext.Class,
     Data.Sext.TH
-
-  other-modules:
-    Data.Sext.Class
 
   build-depends:
     base             >=4.7 && <4.8,
