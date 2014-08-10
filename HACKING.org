@@ -47,18 +47,9 @@
 ** String literals
    We want to be able to include sext values in our programs in the
    form of string literals, similar to what's possible for Text or
-   ByteString using OverloadedStrings extension. However, IsString
-   type class is not an option: we ne need to capture and check
-   lengths of string literals in compile time while not exposing an
-   unsafe operation in IsString instance. The only method of IsString
-   class, fromString, disregards string length information and
-   requires being exposed in order for OverloadedStrings to be
-   supported for sext users. Making fromString non-total would
-   postpone the actual check to runtime which is not desirable as
-   well.
+   ByteString using OverloadedStrings extension.
 
-   Template Haskell seems to be an answer: we could easily implement a
-   sext splice, used as follows:
+   We could easily implement a sext splice, used as follows:
 
    : $(sext "Foobar")
 
@@ -70,6 +61,11 @@
    and IsString. Actual literal length is encoded in the type of the
    produced expression. We use untyped Template Haskell since types
    cannot be spliced.
+
+   We could also use one of type-safe operations like createLeft/Right
+   to make our Sexts instances of IsString. A sane choice is to be
+   picked. Probably in most of cases (createLeft ' ') would be
+   expected.
 
 ** Constructing Sexts
 

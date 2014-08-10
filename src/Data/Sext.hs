@@ -9,6 +9,41 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
 
+{-|
+
+Sext (/s/tatic t/ext/) provides type-level safety for basic operations
+on string-like types (finite lists of elements). Use it when you need
+static guarantee on lengths of strings produced in your code.
+
+An example application would be a network exchange protocol built of
+packets with fixed-width fields:
+
+> mkPacket :: String -> Sext 32 String
+> mkPacket inp =
+>   -- 5-character version signature
+>   $(sext "PKT10") `append`
+>   -- 25-character payload
+>   payload `append`
+>   -- 2-character payload checksum
+>   checksum
+>   where
+>     payload = createLeft ' ' inp
+>     checksum :: Sext 2 String
+>     checksum = createLeft ' ' $
+>                show $ length payload `mod` 100
+>
+> message :: Sext 64 String
+> message = mkPacket "Hello" `append` mkPacket "world"
+
+Sext combinators are defined for members of 'Sextable' class. The
+package includes 'Sextable' instances for several common types.
+
+This module is meant to be imported qualifed, e.g.
+
+> import qualified Data.Sext as S
+
+-}
+
 module Data.Sext
        (
          -- * Constructing Sexts
@@ -49,9 +84,9 @@ import           Data.Sext.TH
 
 -- | Safely create a Sext, possibly altering the source to match
 -- target length. If target length is less than that of the source,
--- it gets truncated. If target length is greater, the source is
--- padded using the provided basic element. Elements on the left are
--- preferred.
+-- the source gets truncated. If target length is greater, the source
+-- is padded using the provided basic element. Elements on the left
+-- are preferred.
 --
 -- >>> createLeft ' ' "foobarbaz" :: Sext 6 String
 -- "foobar"
@@ -93,7 +128,7 @@ createRight e s =
 -- >>> create "barbaz" :: Maybe (Sext 8 String)
 -- Nothing
 --
--- This is safer than 'unsafeCreate' and unlike with 'createLeft' /
+-- This is safer than 'C.unsafeCreate' and unlike with 'createLeft' /
 -- 'createRight' the source value is left unchanged. However, this
 -- implies a further run-time check for Nothing values.
 create :: forall a i.
@@ -167,6 +202,8 @@ length :: forall a m.
 length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
 
 
+-- | Fill a Sext with extra elements up to target length, padding
+-- original elements to the left.
 padLeft :: forall a m n.
            (Sextable a, KnownNat m, KnownNat (n - m),
             n ~ (n - m + m), m <= n) =>
@@ -174,6 +211,7 @@ padLeft :: forall a m n.
 padLeft pad = append (replicate pad)
 
 
+-- | Like 'padLeft', but original elements are padded to the right.
 padRight :: forall a m n.
            (Sextable a, KnownNat m, KnownNat (n - m),
             n ~ (m + (n - m)), m <= n) =>
