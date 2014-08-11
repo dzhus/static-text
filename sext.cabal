@@ -1,16 +1,28 @@
 name:                sext
 version:             0.1.0.0
 synopsis:            Lists, Texts and ByteStrings with type-encoded length
--- description:
+homepage:            http://github.com/dzhus/sext/
+
+description:         Sext (/s/tatic t/ext/) provides type-level safety for
+                     basic operations on string-like types (finite
+                     lists of elements). Use it when you need static
+                     guarantee on lengths of strings produced in your
+                     code.
+
 license:             BSD3
 license-file:        LICENSE
 author:              Dmitry Dzhus
 maintainer:          dima@dzhus.org
--- copyright:
-category:            Data
+category:            Data, Text, Type System
+stability:           Experimental
+
 build-type:          Simple
 cabal-version:       >=1.10
 tested-with:         GHC == 7.8.3
+
+source-repository head
+  type:     git
+  location: http://github.com/dzhus/sext
 
 flag text
   description: Build interface for Text
