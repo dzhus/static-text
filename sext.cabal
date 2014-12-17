@@ -1,5 +1,5 @@
 name:                sext
-version:             0.1.0.0
+version:             0.1.0.1
 synopsis:            Lists, Texts and ByteStrings with type-encoded length
 homepage:            http://github.com/dzhus/sext/
 
@@ -50,7 +50,7 @@ library
   if flag(text)
     cpp-options: -DWITH_TEXT
     build-depends:
-      text           >=1.1 && <1.2
+      text           >=1.1 && <1.3
 
   ghc-options: -Wall
   hs-source-dirs:      src
