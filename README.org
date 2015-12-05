@@ -1,4 +1,11 @@
 * sext: lists, Texts, ByteStrings with statically encoded length
+** Introduction
+
+   Sext (static text) provides type-level safety for basic
+   operations on string-like types (finite lists of elements). Use it
+   when you need static guarantee on lengths of strings produced in
+   your code.
+
 ** Goals
    We need a set of combinators to build strings/lists which support
    static length-checking.
