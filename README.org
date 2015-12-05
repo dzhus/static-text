@@ -1,4 +1,5 @@
 * sext: lists, Texts, ByteStrings with statically encoded length
+  [[https://travis-ci.org/dzhus/sext.svg]]
 ** Introduction
 
    Sext (static text) provides type-level safety for basic
@@ -39,17 +40,6 @@
 
    Type safety is provided by means of an associated type Sext.
    Sextable methods map basic type operations over this wrapper.
-
-*** Generating instances for Sextable
-    Strings are lists, so we also provide instances for [a] type.
-
-    mkSextable TH macro provides a single unique name which can be
-    supplied to container/element type generators. This can be used to
-    generate instances for list and other Functor unary types.
-
-    Methods definitions are built without any quoting (unless we reuse
-    unsafeCreate): associated type constructor name would need to be
-    spliced (which is impossible).
 
 ** String literals
    We want to be able to include sext values in our programs in the
