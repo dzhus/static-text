@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE TemplateHaskell #-}
 
@@ -45,8 +46,13 @@ sext (LitS s) =
     return $ SigE (AppE (VarE 'unsafeCreate) (LitE $ StringL s))
                 (ForallT
                  [PlainTV at]
+                 #if MIN_VERSION_template_haskell(2,10,0)
+                 [ AppT (ConT ''IsString) (VarT at)
+                 , AppT (ConT ''Sextable) (VarT at)] $
+                 #else
                  [ ClassP ''IsString [VarT at]
                  , ClassP ''Sextable [VarT at]] $
+                 #endif
                  (AppT
                   (AppT
                    (ConT ''Sext)

@@ -1,5 +1,5 @@
 name:                sext
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Lists, Texts and ByteStrings with type-encoded length
 homepage:            http://github.com/dzhus/sext/
 
@@ -18,7 +18,7 @@ stability:           Experimental
 
 build-type:          Simple
 cabal-version:       >=1.10
-tested-with:         GHC == 7.8.3
+tested-with:         GHC == 7.8.3, GHC == 7.10.2
 
 source-repository head
   type:     git
@@ -39,8 +39,8 @@ library
     Data.Sext.TH
 
   build-depends:
-    base             >=4.7 && <4.8,
-    template-haskell
+    base             >=4.7 && <4.9,
+    template-haskell >= 2.9 && <2.11
 
   if flag(bytestring)
     cpp-options: -DWITH_BS
