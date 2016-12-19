@@ -39,8 +39,8 @@ library
     Data.Sext.TH
 
   build-depends:
-    base             >=4.7 && <4.9,
-    template-haskell >= 2.9 && <2.11
+    base             >=4.7 && <5,
+    template-haskell >= 2.9
 
   if flag(bytestring)
     cpp-options: -DWITH_BS
