@@ -1,0 +1,47 @@
+name: sext
+version: '0.1.0.2'
+synopsis: Lists, Texts and ByteStrings with type-encoded length
+description: ! 'Sext (/s/tatic t/ext/) provides type-level safety for
+  basic operations on string-like types (finite lists of elements).
+  Use it when you need static guarantee on lengths of strings produced
+  in your code.'
+category: Data, Text, Type System
+author: Dmitry Dzhus
+maintainer: dima@dzhus.org
+license: BSD3
+homepage: http://github.com/dzhus/sext/
+git: http://github.com/dzhus/sext
+stability: Experimental
+tested-with: GHC==7.10.3 GHC==8.0.1
+
+dependencies:
+- base >=4.7 && <5
+- template-haskell >=2.9
+
+library:
+  source-dirs: src
+  ghc-options: -Wall
+  exposed-modules:
+  - Data.Sext
+  - Data.Sext.Class
+  - Data.Sext.TH
+
+  when:
+  - condition: flag(bytestring)
+    cpp-options: -DWITH_BS
+    dependencies:
+    - bytestring >=0.10
+  - condition: flag(text)
+    cpp-options: -DWITH_TEXT
+    dependencies:
+    - text >=1.1
+
+flags:
+  bytestring:
+    description: Build interface for ByteString
+    manual: false
+    default: true
+  text:
+    description: Build interface for Text
+    manual: false
+    default: true
