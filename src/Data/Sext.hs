@@ -68,6 +68,7 @@ module Data.Sext
        , length
 
          -- * Sextable class
+       , Sext
        , Sextable(C.unsafeCreate, C.unwrap)
        )
 
