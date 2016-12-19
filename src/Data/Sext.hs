@@ -147,7 +147,7 @@ create s =
 
 -- | Append two Sexts together.
 --
--- >>> append "foo" "bar" :: Sext 6 String
+-- >>> append $(sext "foo") $(sext "bar") :: Sext 6 String
 -- "foobar"
 append :: forall a m n.
           (Sextable a) => Sext m a -> Sext n a -> Sext (m + n) a
@@ -166,6 +166,10 @@ replicate e =
     t = fromIntegral $ natVal (Proxy :: Proxy i)
 
 
+-- | Map a Sext to a Sext of the same length.
+--
+-- >>> map toUpper $(sext "Hello") :: Sext 5 String
+-- "HELLO"
 map :: Sextable a =>
        (Elem a -> Elem a) -> Sext m a -> Sext m a
 map f s =
@@ -174,7 +178,7 @@ map f s =
 
 -- | Reduce Sext length, preferring elements on the left.
 --
--- >>> take "Foobar" :: Sext 3 String
+-- >>> take $(sext "Foobar") :: Sext 3 String
 -- "Foo"
 take :: forall a m n.
         (Sextable a, KnownNat m, KnownNat n, n <= m) =>
@@ -187,7 +191,7 @@ take s =
 
 -- | Reduce Sext length, preferring elements on the right.
 --
--- >>> drop "Foobar" :: Sext 2 String
+-- >>> drop $(sext "Foobar") :: Sext 2 String
 -- "ar"
 drop :: forall a m n.
         (Sextable a, KnownNat m, KnownNat n, n <= m) =>
