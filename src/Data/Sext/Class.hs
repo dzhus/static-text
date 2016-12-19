@@ -26,7 +26,11 @@ import           GHC.Word
 import qualified Data.Text as T
 #endif
 
+#if MIN_VERSION_base(4,9,0)
+import           GHC.TypeLits hiding (Text)
+#else
 import           GHC.TypeLits
+#endif
 
 
 -- | Class of types which can be assigned a type-level length.
