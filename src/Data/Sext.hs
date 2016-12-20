@@ -20,6 +20,12 @@ static guarantee on lengths of strings produced in your code.
 An example application would be a network exchange protocol built of
 packets with fixed-width fields:
 
+> {-# LANGUAGE DataKinds #-}
+> {-# LANGUAGE OverloadedStrings #-}
+> {-# LANGUAGE TemplateHaskell #-}
+>
+> import Data.Sext
+>
 > mkPacket :: String -> Sext 32 String
 > mkPacket inp =
 >   -- 5-character version signature
@@ -32,7 +38,7 @@ packets with fixed-width fields:
 >     payload = createLeft ' ' inp
 >     checksum :: Sext 2 String
 >     checksum = createLeft ' ' $
->                show $ length payload `mod` 100
+>                show $ Data.Sext.length payload `mod` 100
 >
 > message :: Sext 64 String
 > message = mkPacket "Hello" `append` mkPacket "world"

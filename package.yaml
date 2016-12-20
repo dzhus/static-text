@@ -44,3 +44,10 @@ flags:
     description: Build interface for Text
     manual: false
     default: true
+
+tests:
+  sext-example:
+    source-dirs: tests
+    main: Main.hs
+    dependencies:
+      - sext
