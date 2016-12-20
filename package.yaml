@@ -17,8 +17,8 @@ ghc-options:
   - -Wall
 
 dependencies:
-  - base >=4.7 && <5
-  - template-haskell >=2.9
+  - base < 5
+  - template-haskell
 
 library:
   source-dirs: src
@@ -32,11 +32,11 @@ library:
     - condition: flag(bytestring)
       cpp-options: -DWITH_BS
       dependencies:
-        - bytestring >=0.10
+        - bytestring
     - condition: flag(text)
       cpp-options: -DWITH_TEXT
       dependencies:
-        - text >=1.1
+        - text
     - condition: flag(vector)
       cpp-options: -DWITH_VECTOR
       dependencies:
