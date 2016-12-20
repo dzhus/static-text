@@ -1,17 +1,20 @@
-name: sext
-version: '0.1.1'
-synopsis: Lists, Texts and ByteStrings with type-encoded length
+name:        sext
+version:     "0.1.1"
+synopsis:    Lists, Texts and ByteStrings with type-encoded length
 
-description: ! 'Sext (/s/tatic t/ext/) provides type-level safety for
-  basic operations on string-like types (finite lists of elements).
-  Use it when you need static guarantee on lengths of strings produced
-  in your code.'
+description: Sext (/s/tatic t/ext/) provides type-level safety for
+             basic operations on string-like types (finite lists of
+             elements). Use it when you need static guarantee on
+             lengths of strings produced in your code.
 
-github: dzhus/sext
-license: BSD3
-author: Dmitry Dzhus
-maintainer: dima@dzhus.org
-category: Data, Text, Type System
+github:      dzhus/sext
+license:     BSD3
+author:      Dmitry Dzhus
+maintainer:  dima@dzhus.org
+category:    Data, Text, Type System
+
+ghc-options:
+  - -Wall
 
 dependencies:
   - base >=4.7 && <5
