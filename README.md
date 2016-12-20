@@ -1,6 +1,8 @@
 # sext: lists, Texts, ByteStrings with statically encoded length
 
 [![Travis CI build status](https://travis-ci.org/dzhus/sext.svg)](https://travis-ci.org/dzhus/sext)
+[![Hackage](https://img.shields.io/hackage/v/sext.svg)](https://hackage.haskell.org/package/sext)
+[![Hackage deps](https://img.shields.io/hackage-deps/v/sext.svg)](http://packdeps.haskellers.com/feed?needle=sext)
 
 ## Introduction
 
