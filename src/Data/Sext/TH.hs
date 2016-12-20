@@ -53,8 +53,8 @@ sext (LitS s) =
                  [ ClassP ''IsString [VarT at]
                  , ClassP ''Sextable [VarT at]] $
 #endif
+                 AppT
                  (AppT
-                  (AppT
-                   (ConT ''Sext)
-                   (LitT $ NumTyLit (fromIntegral $ P.length s)))
-                  (VarT at)))
+                  (ConT ''Sext)
+                  (LitT $ NumTyLit (fromIntegral $ P.length s)))
+                 (VarT at))

@@ -75,7 +75,7 @@ module Data.Sext
 
          -- * Sextable class
        , Sext
-       , Sextable(C.unsafeCreate, C.unwrap)
+       , Sextable(unsafeCreate, unwrap)
        )
 
 where
