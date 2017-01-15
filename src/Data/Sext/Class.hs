@@ -26,6 +26,10 @@ import           GHC.Word
 import qualified Data.Text as T
 #endif
 
+#ifdef WITH_VECTOR
+import qualified Data.Vector as V
+#endif
+
 #if MIN_VERSION_base(4,9,0)
 import           GHC.TypeLits hiding (Text)
 #else
@@ -123,4 +127,22 @@ instance Sextable B.ByteString where
   map = B.map
   take = B.take
   drop = B.drop
+#endif
+
+
+#ifdef WITH_VECTOR
+instance Sextable (V.Vector a) where
+  type Elem (V.Vector a) = a
+
+  data Sext i (V.Vector a) = Vector (V.Vector a)
+
+  unsafeCreate = Vector
+  unwrap (Vector t) = t
+
+  length = V.length
+  append = (V.++)
+  replicate = V.replicate
+  map = V.map
+  take = V.take
+  drop = V.drop
 #endif

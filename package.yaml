@@ -1,6 +1,6 @@
 name:        sext
-version:     "0.1.1"
-synopsis:    Lists, Texts and ByteStrings with type-encoded length
+version:     "0.1.2"
+synopsis:    Lists, Texts, ByteStrings, and Vectors with type-encoded length
 
 description: Sext (/s/tatic t/ext/) provides type-level safety for
              basic operations on string-like types (finite lists of
@@ -37,6 +37,10 @@ library:
       cpp-options: -DWITH_TEXT
       dependencies:
         - text >=1.1
+    - condition: flag(vector)
+      cpp-options: -DWITH_VECTOR
+      dependencies:
+        - vector
 
 flags:
   bytestring:
@@ -45,6 +49,10 @@ flags:
     default: true
   text:
     description: Build interface for Text
+    manual: false
+    default: true
+  vector:
+    description: Build interface for Vector
     manual: false
     default: true
 
