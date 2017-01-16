@@ -75,13 +75,15 @@ class Sextable a where
 
 
 instance (Show a, Sextable a) => Show (Sext i a) where
-  show s = show $ unwrap s
+  show = show . unwrap
+  showsPrec p = showsPrec p . unwrap
 
 
 instance Sextable [a] where
   type Elem [a] = a
 
   data Sext i [a] = List [a]
+    deriving (Eq, Ord)
 
   unsafeCreate = List
   unwrap (List l) = l
@@ -99,6 +101,7 @@ instance Sextable T.Text where
   type Elem T.Text = Char
 
   data Sext i T.Text = Text T.Text
+    deriving (Eq, Ord)
 
   unsafeCreate = Text
   unwrap (Text t) = t
@@ -117,6 +120,7 @@ instance Sextable B.ByteString where
   type Elem B.ByteString = Word8
 
   data Sext i B.ByteString = ByteString B.ByteString
+    deriving (Eq, Ord)
 
   unsafeCreate = ByteString
   unwrap (ByteString t) = t
@@ -135,6 +139,7 @@ instance Sextable (V.Vector a) where
   type Elem (V.Vector a) = a
 
   data Sext i (V.Vector a) = Vector (V.Vector a)
+    deriving (Eq, Ord)
 
   unsafeCreate = Vector
   unwrap (Vector t) = t
