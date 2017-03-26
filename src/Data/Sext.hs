@@ -28,7 +28,7 @@ packets with fixed-width fields:
 
 > import Data.Sext
 >
-> mkPacket :: String -> Sext 32 String
+> mkPacket :: ByteString -> Sext 32 ByteString
 > mkPacket inp =
 >   -- 5-character version signature
 >   $(sext "PKT10") `append`
@@ -37,12 +37,12 @@ packets with fixed-width fields:
 >   -- 2-character payload checksum
 >   checksum
 >   where
->     payload = createLeft ' ' inp
->     checksum :: Sext 2 String
->     checksum = createLeft ' ' $
->                show $ Data.Sext.length payload `mod` 100
+>     payload = createLeft 0x20 inp
+>     checksum :: Sext 2 ByteString
+>     checksum = createLeft 0x20 $
+>                pack $ show $ Data.Sext.length payload `mod` 100
 >
-> message :: Sext 64 String
+> message :: Sext 64 ByteString
 > message = mkPacket "Hello" `append` mkPacket "world"
 
 Sext combinators are defined for members of 'Sextable' class. The

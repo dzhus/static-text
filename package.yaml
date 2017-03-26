@@ -64,6 +64,7 @@ tests:
     source-dirs: tests
     main: Main.hs
     dependencies:
+      - bytestring
       - sext
       - tasty
       - tasty-hunit
