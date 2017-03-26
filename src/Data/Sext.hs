@@ -106,7 +106,7 @@ createLeft :: forall a i.
               Elem a -> a -> Sext i a
 createLeft e s =
   C.unsafeCreate $
-  C.take (C.length s) $
+  C.take t $
   C.append s $
   C.replicate (t - C.length s) e
   where

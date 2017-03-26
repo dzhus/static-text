@@ -5,3 +5,8 @@
 #### Added
 
 - `ShortByteString` support
+
+#### Fixed
+
+- a bug in `createLeft` which failed to actually pad/truncate strings
+  (reported by Altai-man https://github.com/dzhus/sext/issues/4)
