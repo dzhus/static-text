@@ -20,6 +20,7 @@ import qualified Prelude as P
 #ifdef WITH_BS
 import qualified Data.ByteString as B
 import           GHC.Word
+import qualified Data.ByteString.Short as BS
 #endif
 
 #ifdef WITH_TEXT
@@ -131,6 +132,24 @@ instance Sextable B.ByteString where
   map = B.map
   take = B.take
   drop = B.drop
+
+-- | Sextable instance for 'BS.ShortByteString' uses intermediate
+-- 'B.ByteString's (pinned) for all modification operations.
+instance Sextable BS.ShortByteString where
+  type Elem BS.ShortByteString = Word8
+
+  data Sext i BS.ShortByteString = ByteStringS BS.ShortByteString
+    deriving (Eq, Ord)
+
+  unsafeCreate = ByteStringS
+  unwrap (ByteStringS t) = t
+
+  length = BS.length
+  append a b = BS.toShort $ B.append (BS.fromShort a) (BS.fromShort b)
+  replicate n = BS.toShort . B.replicate n
+  map f = BS.toShort . B.map f . BS.fromShort
+  take n = BS.toShort . B.take n . BS.fromShort
+  drop n = BS.toShort . B.drop n . BS.fromShort
 #endif
 
 
