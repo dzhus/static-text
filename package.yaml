@@ -13,6 +13,9 @@ author:      Dmitry Dzhus
 maintainer:  dima@dzhus.org
 category:    Data, Text, Type System
 
+extra-source-files:
+  - CHANGELOG.md
+
 ghc-options:
   - -Wall
 
