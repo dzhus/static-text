@@ -65,3 +65,5 @@ tests:
     main: Main.hs
     dependencies:
       - sext
+      - tasty
+      - tasty-hunit

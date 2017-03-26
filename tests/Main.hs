@@ -2,6 +2,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
 
+import Data.Typeable
+import Test.Tasty
+import Test.Tasty.HUnit
+
 import Data.Sext
 
 mkPacket :: String -> Sext 32 String
@@ -21,4 +25,11 @@ mkPacket inp =
 message :: Sext 64 String
 message = mkPacket "Hello" `append` mkPacket "world"
 
-main = print message
+tests :: [TestTree]
+tests =
+  [ testCase ("The actual length of " ++ show (typeOf message)) $
+    assertEqual "" 64 (Prelude.length $ unwrap message)
+  ]
+
+main :: IO ()
+main = defaultMain $ testGroup "Tests" tests
