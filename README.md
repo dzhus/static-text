@@ -1,4 +1,4 @@
-# sext: lists, Texts, ByteStrings with statically encoded length
+# sext: lists, Texts, ByteStrings and Vectors with type-encoded length
 
 [![Travis CI build status](https://travis-ci.org/dzhus/sext.svg)](https://travis-ci.org/dzhus/sext)
 [![Hackage](https://img.shields.io/hackage/v/sext.svg)](https://hackage.haskell.org/package/sext)
@@ -8,7 +8,7 @@ Sext (*s*tatic t*ext*) provides type-level safety for basic operations
 on string-like types (finite lists of elements). Use it when you need
 static guarantee on lengths of strings produced in your code.
 
-Please consult
-the
-[Hackage page for sext](http://hackage.haskell.org/package/sext/docs/Data-Sext.html) for
+Please consult the [Hackage page for sext][hackage-doc] for
 documentation and examples.
+
+[hackage-doc]: http://hackage.haskell.org/package/sext/docs/Data-Sext.html
