@@ -214,7 +214,7 @@ drop s =
 -- | Obtain value-level length.
 length :: forall a m.
           KnownNat m => Sext m a -> P.Int
-length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
+length _ = (P.fromIntegral P.$ natVal (Proxy :: Proxy m))
 
 
 -- | Fill a Sext with extra elements up to target length, padding
