@@ -1,6 +1,7 @@
 # sext: lists, Texts, ByteStrings and Vectors with type-encoded length
 
 [![Travis CI build status](https://travis-ci.org/dzhus/sext.svg)](https://travis-ci.org/dzhus/sext)
+[![Code Climate](https://codeclimate.com/github/dzhus/sext/badges/gpa.svg)](https://codeclimate.com/github/dzhus/sext)
 [![Hackage](https://img.shields.io/hackage/v/sext.svg)](https://hackage.haskell.org/package/sext)
 [![Hackage deps](https://img.shields.io/hackage-deps/v/sext.svg)](http://packdeps.haskellers.com/feed?needle=sext)
 
