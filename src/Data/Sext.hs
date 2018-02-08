@@ -82,7 +82,6 @@ module Data.Sext
 where
 
 import           Prelude as P hiding (drop, length, map, replicate, take)
-import qualified Prelude as P hiding (length)
 
 import           GHC.TypeLits
 
