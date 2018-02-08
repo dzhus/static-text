@@ -91,6 +91,13 @@ import qualified Data.Sext.Class as C
 import           Data.Sext.TH
 
 
+-- $setup
+-- >>> :set -XDataKinds
+-- >>> :set -XTemplateHaskell
+-- >>> :set -XOverloadedStrings
+-- >>> import Data.Char (toUpper)
+
+
 -- | Safely create a Sext, possibly altering the source to match
 -- target length. If target length is less than that of the source,
 -- the source gets truncated. If target length is greater, the source

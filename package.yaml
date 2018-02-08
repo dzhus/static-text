@@ -68,3 +68,12 @@ tests:
       - sext
       - tasty
       - tasty-hunit
+
+  sext-doctests:
+    source-dirs: tests
+    main: doctest-driver.hs
+    ghc-options: -threaded
+    dependencies:
+      - base
+      - doctest
+      - doctest-discover
