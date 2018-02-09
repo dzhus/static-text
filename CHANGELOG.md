@@ -1,10 +1,18 @@
-# 0.1.3.1
+# Changelog
+
+## [0.1.3.1] - 2017-10-29
+
+### Added
 
 - GHC 8.2.x support
 
-# 0.1.3
+## [0.1.3] - 2017-03-26
 
-- Added `ShortByteString` support
+### Added
 
-- Fixed a bug in `createLeft` which failed to actually pad/truncate
-  strings (reported by Altai-man https://github.com/dzhus/sext/issues/4)
+- `ShortByteString` support
+
+### Fixed
+
+- A bug in `createLeft` which failed to actually pad/truncate strings
+  (reported by Altai-man <https://github.com/dzhus/sext/issues/4>)
