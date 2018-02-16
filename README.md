@@ -19,7 +19,7 @@ packets with fixed-width fields:
 {-# LANGUAGE TemplateHaskell #-}
 import Data.StaticText
 
-mkPacket :: ByteString -> StaticText 32 ByteString
+mkPacket :: ByteString -> Static 32 ByteString
 mkPacket inp =
   -- 5-character version signature
   $(sext "PKT10") `append`
@@ -29,11 +29,11 @@ mkPacket inp =
   checksum
   where
     payload = createLeft 0x20 inp
-    checksum :: StaticText 2 ByteString
+    checksum :: Static 2 ByteString
     checksum = createLeft 0x20 $
-               pack $ show $ Data.StaticText.length payload `mod` 100
+               pack $ show $ Data.Static.length payload `mod` 100
 
-message :: StaticText 64 ByteString
+message :: Static 64 ByteString
 message = mkPacket "Hello" `append` mkPacket "world"
 ```
 
