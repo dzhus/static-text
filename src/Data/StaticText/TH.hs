@@ -56,5 +56,5 @@ sext (LitS s) =
                  AppT
                  (AppT
                   (ConT ''Static)
-                  (LitT $ NumTyLit (fromIntegral $ P.length s)))
-                 (VarT at))
+                  (VarT at))
+                 (LitT $ NumTyLit (fromIntegral $ P.length s)))

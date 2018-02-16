@@ -9,7 +9,7 @@ import Test.Tasty.HUnit
 
 import Data.StaticText
 
-mkPacket :: ByteString -> Static 32 ByteString
+mkPacket :: ByteString -> Static ByteString 32
 mkPacket inp =
   -- 5-character version signature
   $(sext "PKT10") `append`
@@ -19,11 +19,11 @@ mkPacket inp =
   checksum
   where
     payload = createLeft 0x20 inp
-    checksum :: Static 2 ByteString
+    checksum :: Static ByteString 2
     checksum = createLeft 0x20 $
                pack $ show $ Data.StaticText.length payload `mod` 100
 
-message :: Static 64 ByteString
+message :: Static ByteString 64
 message = mkPacket "Hello" `append` mkPacket "world"
 
 tests :: [TestTree]

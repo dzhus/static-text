@@ -107,13 +107,13 @@ import           Data.StaticText.TH
 -- is padded using the provided basic element. Elements on the left
 -- are preferred.
 --
--- >>> createLeft ' ' "foobarbaz" :: Static 6 String
+-- >>> createLeft ' ' "foobarbaz" :: Static String 6
 -- "foobar"
--- >>> createLeft '#' "foobarbaz" :: Static 12 String
+-- >>> createLeft '#' "foobarbaz" :: Static String 12
 -- "foobarbaz###"
 createLeft :: forall a i.
               (IsStaticText a, KnownNat i) =>
-              Elem a -> a -> Static i a
+              Elem a -> a -> Static a i
 createLeft e s =
   C.unsafeCreate $
   C.take t $
@@ -125,13 +125,13 @@ createLeft e s =
 
 -- | Just like 'createLeft', except that elements on the right are preferred.
 --
--- >>> createRight '@' "foobarbaz" :: Static 6 String
+-- >>> createRight '@' "foobarbaz" :: Static String 6
 -- "barbaz"
--- >>> createRight '!' "foobarbaz" :: Static 12 String
+-- >>> createRight '!' "foobarbaz" :: Static String 12
 -- "!!!foobarbaz"
 createRight :: forall a i.
                (IsStaticText a, KnownNat i) =>
-               Elem a -> a -> Static i a
+               Elem a -> a -> Static a i
 createRight e s =
   C.unsafeCreate $
   C.drop (C.length s - t) $
@@ -142,9 +142,9 @@ createRight e s =
 
 -- | Attempt to safely create a Static if it matches target length.
 --
--- >>> create "foobar" :: Maybe (Static 6 String)
+-- >>> create "foobar" :: Maybe (Static String 6)
 -- Just "foobar"
--- >>> create "barbaz" :: Maybe (Static 8 String)
+-- >>> create "barbaz" :: Maybe (Static String 8)
 -- Nothing
 --
 -- This is safer than 'C.unsafeCreate' and unlike with 'createLeft' /
@@ -152,7 +152,7 @@ createRight e s =
 -- implies a further run-time check for Nothing values.
 create :: forall a i.
           (IsStaticText a, KnownNat i) =>
-          a -> P.Maybe (Static i a)
+          a -> P.Maybe (Static a i)
 create s =
   if C.length s == t
   then Just $ C.unsafeCreate s
@@ -163,19 +163,19 @@ create s =
 
 -- | Append two Statics together.
 --
--- >>> append $(sext "foo") $(sext "bar") :: Static 6 String
+-- >>> append $(sext "foo") $(sext "bar") :: Static String 6
 -- "foobar"
 append :: forall a m n.
-          (IsStaticText a) => Static m a -> Static n a -> Static (m + n) a
+          (IsStaticText a) => Static a m -> Static a n -> Static a (m + n)
 append a b = C.unsafeCreate $ C.append (C.unwrap a) (C.unwrap b)
 
 
 -- | Construct a new Static from a basic element.
 --
--- >>> replicate '=' :: Static 10 String
+-- >>> replicate '=' :: Static String 10
 -- "=========="
 replicate :: forall a i.
-             (IsStaticText a, KnownNat i) => Elem a -> Static i a
+             (IsStaticText a, KnownNat i) => Elem a -> Static a i
 replicate e =
   C.unsafeCreate $ C.replicate t e
   where
@@ -184,21 +184,21 @@ replicate e =
 
 -- | Map a Static to a Static of the same length.
 --
--- >>> map toUpper $(sext "Hello") :: Static 5 String
+-- >>> map toUpper $(sext "Hello") :: Static String 5
 -- "HELLO"
 map :: IsStaticText a =>
-       (Elem a -> Elem a) -> Static m a -> Static m a
+       (Elem a -> Elem a) -> Static a m -> Static a m
 map f s =
   C.unsafeCreate $ C.map f $ C.unwrap s
 
 
 -- | Reduce Static length, preferring elements on the left.
 --
--- >>> take $(sext "Foobar") :: Static 3 String
+-- >>> take $(sext "Foobar") :: Static String 3
 -- "Foo"
 take :: forall a m n.
         (IsStaticText a, KnownNat m, KnownNat n, n <= m) =>
-        Static m a -> Static n a
+        Static a m -> Static a n
 take s =
   C.unsafeCreate $ C.take t $ C.unwrap s
   where
@@ -207,11 +207,11 @@ take s =
 
 -- | Reduce Static length, preferring elements on the right.
 --
--- >>> drop $(sext "Foobar") :: Static 2 String
+-- >>> drop $(sext "Foobar") :: Static String 2
 -- "ar"
 drop :: forall a m n.
         (IsStaticText a, KnownNat m, KnownNat n, n <= m) =>
-        Static m a -> Static n a
+        Static a m -> Static a n
 drop s =
   C.unsafeCreate $ C.drop (C.length s' - t) s'
   where
@@ -221,7 +221,7 @@ drop s =
 
 -- | Obtain value-level length.
 length :: forall a m.
-          KnownNat m => Static m a -> P.Int
+          KnownNat m => Static a m -> P.Int
 length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
 
 
@@ -230,7 +230,7 @@ length _ = P.fromIntegral P.$ natVal (Proxy :: Proxy m)
 padLeft :: forall a m n.
            (IsStaticText a, KnownNat m, KnownNat (n - m),
             n ~ (n - m + m), m <= n) =>
-           Elem a -> Static m a -> Static n a
+           Elem a -> Static a m -> Static a n
 padLeft pad = append (replicate pad)
 
 
@@ -238,5 +238,5 @@ padLeft pad = append (replicate pad)
 padRight :: forall a m n.
            (IsStaticText a, KnownNat m, KnownNat (n - m),
             n ~ (m + (n - m)), m <= n) =>
-           Elem a -> Static m a -> Static n a
+           Elem a -> Static a m -> Static a n
 padRight pad = P.flip append (replicate pad)

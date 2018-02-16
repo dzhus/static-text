@@ -42,9 +42,9 @@ import           GHC.TypeLits
 -- | Class of types which can be assigned a type-level length.
 class IsStaticText a where
   -- | Data family which wraps values of the underlying type giving
-  -- them a type-level length. @StaticText 6 t@ means a value of type @t@ of
+  -- them a type-level length. @Static t 6@ means a value of type @t@ of
   -- length 6.
-  data Static (i :: Nat) a
+  data Static a (i :: Nat)
 
   -- | Basic element type. For @IsStaticText [a]@, this is @a@.
   type Elem a
@@ -63,10 +63,10 @@ class IsStaticText a where
   --
   -- When implementing new IsStaticText instances, code this to simply
   -- apply the constructor of 'StaticText'.
-  unsafeCreate :: a -> Static i a
+  unsafeCreate :: a -> Static a i
 
   -- | Forget type-level length, obtaining the underlying value.
-  unwrap :: Static i a -> a
+  unwrap :: Static a i -> a
 
   length :: a -> Int
   append :: a -> a -> a
@@ -76,7 +76,7 @@ class IsStaticText a where
   drop :: Int -> a -> a
 
 
-instance (Show a, IsStaticText a) => Show (Static i a) where
+instance (Show a, IsStaticText a) => Show (Static a i) where
   show = show . unwrap
   showsPrec p = showsPrec p . unwrap
 
@@ -84,7 +84,7 @@ instance (Show a, IsStaticText a) => Show (Static i a) where
 instance IsStaticText [a] where
   type Elem [a] = a
 
-  data Static i [a] = List [a]
+  data Static [a] i = List [a]
     deriving (Eq, Ord)
 
   unsafeCreate = List
@@ -102,7 +102,7 @@ instance IsStaticText [a] where
 instance IsStaticText T.Text where
   type Elem T.Text = Char
 
-  data Static i T.Text = Text T.Text
+  data Static T.Text i = Text T.Text
     deriving (Eq, Ord)
 
   unsafeCreate = Text
@@ -121,7 +121,7 @@ instance IsStaticText T.Text where
 instance IsStaticText B.ByteString where
   type Elem B.ByteString = Word8
 
-  data Static i B.ByteString = ByteString B.ByteString
+  data Static B.ByteString i = ByteString B.ByteString
     deriving (Eq, Ord)
 
   unsafeCreate = ByteString
@@ -139,7 +139,7 @@ instance IsStaticText B.ByteString where
 instance IsStaticText BS.ShortByteString where
   type Elem BS.ShortByteString = Word8
 
-  data Static i BS.ShortByteString = ByteStringS BS.ShortByteString
+  data Static BS.ShortByteString i = ByteStringS BS.ShortByteString
     deriving (Eq, Ord)
 
   unsafeCreate = ByteStringS
@@ -158,7 +158,7 @@ instance IsStaticText BS.ShortByteString where
 instance IsStaticText (V.Vector a) where
   type Elem (V.Vector a) = a
 
-  data Static i (V.Vector a) = Vector (V.Vector a)
+  data Static (V.Vector a) i = Vector (V.Vector a)
     deriving (Eq, Ord)
 
   unsafeCreate = Vector
