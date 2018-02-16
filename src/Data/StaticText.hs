@@ -32,7 +32,7 @@ packets with fixed-width fields:
 > mkPacket :: ByteString -> Static 32 ByteString
 > mkPacket inp =
 >   -- 5-character version signature
->   $(sext "PKT10") `append`
+>   $(st "PKT10") `append`
 >   -- 25-character payload
 >   payload `append`
 >   -- 2-character payload checksum
@@ -63,7 +63,7 @@ module Data.StaticText
          -- | See also 'C.unsafeCreate'
          createLeft
        , createRight
-       , sext
+       , st
        , create
        , replicate
 
@@ -163,7 +163,7 @@ create s =
 
 -- | Append two Statics together.
 --
--- >>> append $(sext "foo") $(sext "bar") :: Static String 6
+-- >>> append $(st "foo") $(st "bar") :: Static String 6
 -- "foobar"
 append :: forall a m n.
           (IsStaticText a) => Static a m -> Static a n -> Static a (m + n)
@@ -184,7 +184,7 @@ replicate e =
 
 -- | Map a Static to a Static of the same length.
 --
--- >>> map toUpper $(sext "Hello") :: Static String 5
+-- >>> map toUpper $(st "Hello") :: Static String 5
 -- "HELLO"
 map :: IsStaticText a =>
        (Elem a -> Elem a) -> Static a m -> Static a m
@@ -194,7 +194,7 @@ map f s =
 
 -- | Reduce Static length, preferring elements on the left.
 --
--- >>> take $(sext "Foobar") :: Static String 3
+-- >>> take $(st "Foobar") :: Static String 3
 -- "Foo"
 take :: forall a m n.
         (IsStaticText a, KnownNat m, KnownNat n, n <= m) =>
@@ -207,7 +207,7 @@ take s =
 
 -- | Reduce Static length, preferring elements on the right.
 --
--- >>> drop $(sext "Foobar") :: Static String 2
+-- >>> drop $(st "Foobar") :: Static String 2
 -- "ar"
 drop :: forall a m n.
         (IsStaticText a, KnownNat m, KnownNat n, n <= m) =>

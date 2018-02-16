@@ -22,7 +22,7 @@ import Data.StaticText
 mkPacket :: ByteString -> Static ByteString 32
 mkPacket inp =
   -- 5-character version signature
-  $(sext "PKT10") `append`
+  $(st "PKT10") `append`
   -- 25-character payload
   payload `append`
   -- 2-character payload checksum

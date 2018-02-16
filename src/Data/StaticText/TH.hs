@@ -9,7 +9,7 @@ Template Haskell helpers for StaticText.
 -}
 
 module Data.StaticText.TH
-       ( sext
+       ( st
        )
 
 where
@@ -23,7 +23,7 @@ import           Data.String
 import           Language.Haskell.TH
 
 
--- | A type with IsString instance to allow string literals in 'sext'
+-- | A type with IsString instance to allow string literals in 'st'
 -- argument without quoting.
 newtype LitS = LitS String deriving IsString
 
@@ -32,15 +32,15 @@ newtype LitS = LitS String deriving IsString
 --
 -- Example:
 --
--- > $(sext "Foobar")
+-- > $(st "Foobar")
 --
 -- compiles to
 --
 -- > unsafeCreate "Foobar" :: forall a. (IsString a, IsStaticText a) => StaticText 6 a
 --
 -- where 6 is the string length obtained at compile time.
-sext :: LitS -> Q Exp
-sext (LitS s) =
+st :: LitS -> Q Exp
+st (LitS s) =
   do
     at <- newName "a"
     return $ SigE (AppE (VarE 'unsafeCreate) (LitE $ StringL s))
