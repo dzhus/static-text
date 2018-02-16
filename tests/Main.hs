@@ -7,9 +7,9 @@ import Data.Typeable
 import Test.Tasty
 import Test.Tasty.HUnit
 
-import Data.Sext
+import Data.StaticText
 
-mkPacket :: ByteString -> Sext 32 ByteString
+mkPacket :: ByteString -> StaticText 32 ByteString
 mkPacket inp =
   -- 5-character version signature
   $(sext "PKT10") `append`
@@ -19,11 +19,11 @@ mkPacket inp =
   checksum
   where
     payload = createLeft 0x20 inp
-    checksum :: Sext 2 ByteString
+    checksum :: StaticText 2 ByteString
     checksum = createLeft 0x20 $
-               pack $ show $ Data.Sext.length payload `mod` 100
+               pack $ show $ Data.StaticText.length payload `mod` 100
 
-message :: Sext 64 ByteString
+message :: StaticText 64 ByteString
 message = mkPacket "Hello" `append` mkPacket "world"
 
 tests :: [TestTree]

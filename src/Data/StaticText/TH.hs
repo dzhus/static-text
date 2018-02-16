@@ -4,11 +4,11 @@
 
 {-|
 
-Template Haskell helpers for Sext.
+Template Haskell helpers for StaticText.
 
 -}
 
-module Data.Sext.TH
+module Data.StaticText.TH
        ( sext
        )
 
@@ -17,7 +17,7 @@ where
 import           Prelude
 import qualified Prelude as P (length)
 
-import           Data.Sext.Class
+import           Data.StaticText.Class
 import           Data.String
 
 import           Language.Haskell.TH
@@ -28,7 +28,7 @@ import           Language.Haskell.TH
 newtype LitS = LitS String deriving IsString
 
 
--- | Type-safe Sext constructor macro for string literals.
+-- | Type-safe StaticText constructor macro for string literals.
 --
 -- Example:
 --
@@ -36,7 +36,7 @@ newtype LitS = LitS String deriving IsString
 --
 -- compiles to
 --
--- > unsafeCreate "Foobar" :: forall a. (IsString a, Sextable a) => Sext 6 a
+-- > unsafeCreate "Foobar" :: forall a. (IsString a, IsStaticText a) => StaticText 6 a
 --
 -- where 6 is the string length obtained at compile time.
 sext :: LitS -> Q Exp
@@ -48,13 +48,13 @@ sext (LitS s) =
                  [PlainTV at]
 #if MIN_VERSION_template_haskell(2,10,0)
                  [ AppT (ConT ''IsString) (VarT at)
-                 , AppT (ConT ''Sextable) (VarT at)] $
+                 , AppT (ConT ''IsStaticText) (VarT at)] $
 #else
                  [ ClassP ''IsString [VarT at]
-                 , ClassP ''Sextable [VarT at]] $
+                 , ClassP ''IsStaticText [VarT at]] $
 #endif
                  AppT
                  (AppT
-                  (ConT ''Sext)
+                  (ConT ''StaticText)
                   (LitT $ NumTyLit (fromIntegral $ P.length s)))
                  (VarT at))

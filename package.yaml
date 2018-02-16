@@ -1,13 +1,14 @@
-name:        sext
-version:     "0.1.3.1"
-synopsis:    Lists, Texts, ByteStrings and Vectors with type-encoded length
+name:        static-text
+version:     "0.2"
+synopsis:    Lists, Texts, ByteStrings and Vectors of statically known length
 
-description: Sext (/s/tatic t/ext/) provides type-level safety for
-             basic operations on string-like types (finite lists of
-             elements). Use it when you need static guarantee on
-             lengths of strings produced in your code.
+description: static-text provides type-level safety for basic operations on
+             string-like types (finite lists of elements), such as Data.Text,
+             String (and all lists), Data.ByteString and Data.Vector. Use it
+             when you need static guarantee on lengths of strings produced in your
+             code.
 
-github:      dzhus/sext
+github:      dzhus/static-text
 license:     BSD3
 author:      Dmitry Dzhus
 maintainer:  dima@dzhus.org
@@ -27,9 +28,9 @@ dependencies:
 library:
   source-dirs: src
   exposed-modules:
-    - Data.Sext
-    - Data.Sext.Class
-    - Data.Sext.TH
+    - Data.StaticText
+    - Data.StaticText.Class
+    - Data.StaticText.TH
 
   when:
     - condition: flag(bytestring)
@@ -60,16 +61,16 @@ flags:
     default: true
 
 tests:
-  sext-example:
+  static-text-example:
     source-dirs: tests
     main: Main.hs
     dependencies:
       - bytestring
-      - sext
+      - static-text
       - tasty
       - tasty-hunit
 
-  sext-doctests:
+  static-text-doctests:
     source-dirs: tests
     main: doctest-driver.hs
     ghc-options: -threaded

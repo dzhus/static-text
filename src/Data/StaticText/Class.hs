@@ -4,12 +4,13 @@
 
 {-|
 
-Use this only if you need to make some type Sextable.
+Use this module when you need to add an 'IsStaticText' instance to a
+type.
 
 -}
 
-module Data.Sext.Class
-       ( Sextable(..)
+module Data.StaticText.Class
+       ( IsStaticText(..)
        )
 
 where
@@ -39,33 +40,33 @@ import           GHC.TypeLits
 
 
 -- | Class of types which can be assigned a type-level length.
-class Sextable a where
+class IsStaticText a where
   -- | Data family which wraps values of the underlying type giving
-  -- them a type-level length. @Sext 6 t@ means a value of type @t@ of
+  -- them a type-level length. @StaticText 6 t@ means a value of type @t@ of
   -- length 6.
-  data Sext (i :: Nat) a
+  data StaticText (i :: Nat) a
 
-  -- | Basic element type. For @Sextable [a]@, this is @a@.
+  -- | Basic element type. For @IsStaticText [a]@, this is @a@.
   type Elem a
 
-  -- | Simply wrap a value in a Sext as is, assuming any length.
+  -- | Simply wrap a value in a StaticText as is, assuming any length.
   --
   -- For example, an expression like
   --
-  -- > unsafeCreate "somestring" :: Sext 50 String
+  -- > unsafeCreate "somestring" :: StaticText 50 String
   --
   -- will typecheck, although the stored length information will not
   -- match actual string size. This may result in wrong behaviour of
-  -- all functions defined for Sext.
+  -- all functions defined for StaticText.
   --
   -- Use it only when you know what you're doing.
   --
-  -- When implementing new Sextable instances, code this to simply
-  -- apply the constructor of 'Sext'.
-  unsafeCreate :: a -> Sext i a
+  -- When implementing new IsStaticText instances, code this to simply
+  -- apply the constructor of 'StaticText'.
+  unsafeCreate :: a -> StaticText i a
 
   -- | Forget type-level length, obtaining the underlying value.
-  unwrap :: Sext i a -> a
+  unwrap :: StaticText i a -> a
 
   length :: a -> Int
   append :: a -> a -> a
@@ -75,15 +76,15 @@ class Sextable a where
   drop :: Int -> a -> a
 
 
-instance (Show a, Sextable a) => Show (Sext i a) where
+instance (Show a, IsStaticText a) => Show (StaticText i a) where
   show = show . unwrap
   showsPrec p = showsPrec p . unwrap
 
 
-instance Sextable [a] where
+instance IsStaticText [a] where
   type Elem [a] = a
 
-  data Sext i [a] = List [a]
+  data StaticText i [a] = List [a]
     deriving (Eq, Ord)
 
   unsafeCreate = List
@@ -98,10 +99,10 @@ instance Sextable [a] where
 
 
 #ifdef WITH_TEXT
-instance Sextable T.Text where
+instance IsStaticText T.Text where
   type Elem T.Text = Char
 
-  data Sext i T.Text = Text T.Text
+  data StaticText i T.Text = Text T.Text
     deriving (Eq, Ord)
 
   unsafeCreate = Text
@@ -117,10 +118,10 @@ instance Sextable T.Text where
 
 
 #ifdef WITH_BS
-instance Sextable B.ByteString where
+instance IsStaticText B.ByteString where
   type Elem B.ByteString = Word8
 
-  data Sext i B.ByteString = ByteString B.ByteString
+  data StaticText i B.ByteString = ByteString B.ByteString
     deriving (Eq, Ord)
 
   unsafeCreate = ByteString
@@ -133,12 +134,12 @@ instance Sextable B.ByteString where
   take = B.take
   drop = B.drop
 
--- | Sextable instance for 'BS.ShortByteString' uses intermediate
+-- | IsStaticText instance for 'BS.ShortByteString' uses intermediate
 -- 'B.ByteString's (pinned) for all modification operations.
-instance Sextable BS.ShortByteString where
+instance IsStaticText BS.ShortByteString where
   type Elem BS.ShortByteString = Word8
 
-  data Sext i BS.ShortByteString = ByteStringS BS.ShortByteString
+  data StaticText i BS.ShortByteString = ByteStringS BS.ShortByteString
     deriving (Eq, Ord)
 
   unsafeCreate = ByteStringS
@@ -154,10 +155,10 @@ instance Sextable BS.ShortByteString where
 
 
 #ifdef WITH_VECTOR
-instance Sextable (V.Vector a) where
+instance IsStaticText (V.Vector a) where
   type Elem (V.Vector a) = a
 
-  data Sext i (V.Vector a) = Vector (V.Vector a)
+  data StaticText i (V.Vector a) = Vector (V.Vector a)
     deriving (Eq, Ord)
 
   unsafeCreate = Vector

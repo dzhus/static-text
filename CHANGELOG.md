@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Package renamed to `static-text`
+
 ## [0.1.3.1] - 2017-10-29
 
 ### Added
@@ -15,4 +19,4 @@
 ### Fixed
 
 - A bug in `createLeft` which failed to actually pad/truncate strings
-  (reported by Altai-man <https://github.com/dzhus/sext/issues/4>)
+  (reported by Altai-man <https://github.com/dzhus/static-text/issues/4>)
