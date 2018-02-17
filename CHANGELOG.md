@@ -2,7 +2,16 @@
 
 ## [Unreleased]
 
-- Package renamed to `static-text`
+- Package renamed to `static-text` as per
+  <https://github.com/dzhus/static-text/issues/2>. Old names were
+  changed as follows:
+
+    | before       | after             |
+    |--------------|-------------------|
+    | `Data.Sext`  | `Data.StaticText` |
+    | `Sext n a`   | `Static a n`      |
+    | `Sextable a` | `IsStaticText a`  |
+    | `$(sext ..)` | `$(st ..)`        |
 
 ## [0.1.3.1] - 2017-10-29
 
