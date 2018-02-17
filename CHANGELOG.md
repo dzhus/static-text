@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2018-02-17
+
 ### Changed
 
 - Package renamed to `static-text` as per
@@ -53,6 +55,7 @@
 
 ## [0.1.0.0] - 2014-08-10
 
+[0.2.0]:   https://github.com/dzhus/static-text/compare/0.1.3.1...0.2.0
 [0.1.3.1]: https://github.com/dzhus/static-text/compare/0.1.3...0.1.3.1
 [0.1.3]:   https://github.com/dzhus/static-text/compare/0.1.2...0.1.3
 [0.1.2]:   https://github.com/dzhus/static-text/compare/0.1.1...0.1.2
