@@ -51,18 +51,18 @@ class IsStaticText a where
 
   -- | Simply wrap a value in a Static as is, assuming any length.
   --
+  -- __WARNING__ Use it only when you know what you're doing.
+  --
   -- For example, an expression like
   --
-  -- > unsafeCreate "somestring" :: Static 50 String
+  -- > unsafeCreate "somestring" :: Static String 50
   --
   -- will typecheck, although the stored length information will not
   -- match actual string size. This may result in wrong behaviour of
-  -- all functions defined for Static.
+  -- all functions defined for "IsStaticText".
   --
-  -- Use it only when you know what you're doing.
-  --
-  -- When implementing new IsStaticText instances, code this to simply
-  -- apply the constructor of 'StaticText'.
+  -- When writing new "IsStaticText" instances, make this simply apply
+  -- the constructor of "Static".
   unsafeCreate :: a -> Static a i
 
   -- | Forget type-level length, obtaining the underlying value.

@@ -58,7 +58,7 @@ This module is meant to be imported qualifed, e.g.
 
 module Data.StaticText
        (
-         -- * Constructing StaticTexts
+         -- * Constructing static texts
          --
          -- | See also 'C.unsafeCreate'
          createLeft
@@ -67,7 +67,7 @@ module Data.StaticText
        , create
        , replicate
 
-         -- * Working with StaticTexts
+         -- * Working with static texts
        , append
        , take
        , drop

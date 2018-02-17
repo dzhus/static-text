@@ -28,7 +28,7 @@ import           Language.Haskell.TH
 newtype LitS = LitS String deriving IsString
 
 
--- | Type-safe StaticText constructor macro for string literals.
+-- | Type-safe Static constructor macro for string literals.
 --
 -- Example:
 --
@@ -36,7 +36,7 @@ newtype LitS = LitS String deriving IsString
 --
 -- compiles to
 --
--- > unsafeCreate "Foobar" :: forall a. (IsString a, IsStaticText a) => StaticText 6 a
+-- > unsafeCreate "Foobar" :: forall a. (IsString a, IsStaticText a) => Static a 6
 --
 -- where 6 is the string length obtained at compile time.
 st :: LitS -> Q Exp
