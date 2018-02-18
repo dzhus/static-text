@@ -40,4 +40,17 @@ message = mkPacket "Hello" `append` mkPacket "world"
 Please consult the [Hackage page for static-text][hackage-doc] for
 documentation and examples.
 
+## Alternatives
+
+The emphasis of static-text is on type-safe padding/truncation and
+type-safe string literals. Other similar libraries may suit different
+use cases:
+
+- [vector-sized][] and [fixed-vector][]: full support for Vector API,
+  but not string-like types.
+
 [hackage-doc]: http://hackage.haskell.org/package/static-text/docs/Data-StaticText.html
+
+[fixed-vector]:  https://hackage.haskell.org/package/fixed-vector
+
+[vector-sized]: https://hackage.haskell.org/package/vector-sized
