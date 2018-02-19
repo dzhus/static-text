@@ -29,7 +29,7 @@ message = mkPacket "Hello" `append` mkPacket "world"
 tests :: [TestTree]
 tests =
   [ testCase ("The actual length of " ++ show (typeOf message)) $
-    assertEqual "" 64 (Data.ByteString.Char8.length $ unwrap message)
+    Data.ByteString.Char8.length (unwrap message) @=? 64
   ]
 
 main :: IO ()
