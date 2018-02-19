@@ -16,6 +16,7 @@ category:    Data, Text, Type System
 
 extra-source-files:
   - CHANGELOG.md
+  - README.md
 
 ghc-options:
   - -Wall
