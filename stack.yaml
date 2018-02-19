@@ -1,6 +1,4 @@
 resolver: nightly-2018-02-08
 pvp-bounds: upper
 extra-deps:
-  # A fix for https://github.com/karun012/doctest-discover/issues/13
-- git: https://github.com/karun012/doctest-discover.git
-  commit: f868e7489832605cbd7440f8e3d70091351abe6c
+- doctest-discover-0.1.0.8

@@ -76,4 +76,4 @@ tests:
     ghc-options: -threaded
     dependencies:
       - doctest
-      - doctest-discover
+      - doctest-discover >= 0.1.0.8
