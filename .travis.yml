@@ -19,7 +19,7 @@ before_install:
 
 script:
 - curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s .
-- stack $ARGS --install-ghc --no-terminal test $FLAGS --haddock --no-haddock-deps --pedantic
+- stack $ARGS --install-ghc --no-terminal build $FLAGS --pedantic --haddock --no-haddock-deps --test --bench
 
 cache:
   directories:
