@@ -17,6 +17,7 @@ packets with fixed-width fields:
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell #-}
+import Data.ByteString.Char8 (ByteString, pack)
 import Data.StaticText
 
 mkPacket :: ByteString -> Static ByteString 32
@@ -31,10 +32,13 @@ mkPacket inp =
     payload = createLeft 0x20 inp
     checksum :: Static ByteString 2
     checksum = createLeft 0x20 $
-               pack $ show $ Data.Static.length payload `mod` 100
+               pack $ show $ Data.StaticText.length payload `mod` 100
 
 message :: Static ByteString 64
 message = mkPacket "Hello" `append` mkPacket "world"
+
+main :: IO ()
+main = print message
 ```
 
 Please consult the [Hackage page for static-text][hackage-doc] for

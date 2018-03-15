@@ -1,5 +1,5 @@
 name:        static-text
-version:     "0.2.0.1"
+version:     "0.2.0.2"
 synopsis:    Lists, Texts, ByteStrings and Vectors of statically known length
 
 description: static-text provides type-level safety for basic operations on
@@ -78,3 +78,11 @@ tests:
     dependencies:
       - doctest
       - doctest-discover >= 0.1.0.8
+
+  readme:
+    main: README.lhs
+    ghc-options:  -pgmL markdown-unlit
+    dependencies:
+      - bytestring
+      - markdown-unlit
+      - static-text
