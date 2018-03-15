@@ -1,4 +1,5 @@
-resolver: nightly-2018-02-08
+resolver: nightly-2018-03-15
 pvp-bounds: upper
 extra-deps:
+- doctest-0.15.0
 - doctest-discover-0.1.0.8
