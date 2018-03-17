@@ -36,14 +36,15 @@
 ### Fixed
 
 - A bug in `createLeft` which failed to actually pad/truncate strings
-  (reported by Altai-man <https://github.com/dzhus/static-text/issues/4>)
+  (<https://github.com/dzhus/static-text/issues/4>)
 
 ## [0.1.2] - 2017-01-18
 
 ### Added
 
-- `Vector` support, `Eq` and `Ord` instances (contributed by Dylan
-  Simon <https://github.com/dzhus/static-text/pull/3>)
+- `Vector` support, `Eq` and `Ord` instances. \
+  Contributed by Dylan Simon <dylan@dylex.net>
+  (<https://github.com/dzhus/static-text/pull/3>)
 
 ## [0.1.1] - 2016-19-12
 
