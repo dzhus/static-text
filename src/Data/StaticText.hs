@@ -12,40 +12,6 @@
 
 {-|
 
-static-text provides type-level safety for basic operations on
-string-like types (finite lists of elements), such as "Data.Text",
-"String" (and all lists), "Data.ByteString" and "Data.Vector". Use it
-when you need static guarantee on lengths of strings produced in your
-code.
-
-An example application would be a network exchange protocol built of
-packets with fixed-width fields:
-
-@
-{\-\# LANGUAGE DataKinds #-\}
-{\-\# LANGUAGE OverloadedStrings #-\}
-{\-\# LANGUAGE TemplateHaskell #-\}
-@
-
-> import Data.StaticText
->
-> mkPacket :: ByteString -> Static 32 ByteString
-> mkPacket inp =
->   -- 5-character version signature
->   $(st "PKT10") `append`
->   -- 25-character payload
->   payload `append`
->   -- 2-character payload checksum
->   checksum
->   where
->     payload = createLeft 0x20 inp
->     checksum :: Static 2 ByteString
->     checksum = createLeft 0x20 $
->                pack $ show $ Data.Static.length payload `mod` 100
->
-> message :: Static 64 ByteString
-> message = mkPacket "Hello" `append` mkPacket "world"
-
 static-text combinators are defined for members of 'IsStaticText'
 class. The package includes 'IsStaticText' instances for several
 common types.
