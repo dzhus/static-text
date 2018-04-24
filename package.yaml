@@ -77,7 +77,7 @@ tests:
     ghc-options: -threaded
     dependencies:
       - doctest
-      - doctest-discover >= 0.1.0.8
+      - doctest-driver-gen
 
   readme:
     main: README.lhs
