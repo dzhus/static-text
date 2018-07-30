@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0.2] - 2018-07-30
+
+### Changed
+
+- Use `doctest-driver-gen` to run doctests
+
+- Dependencies bump
+
+- Use `markdown-unlit` to test code example in README
+
 ## [0.2.0.1] - 2018-03-15
 
 ### Changed
@@ -60,6 +70,7 @@
 
 ## [0.1.0.0] - 2014-08-10
 
+[0.2.0.2]: https://github.com/dzhus/static-text/compare/0.2.0.1...0.2.0.2
 [0.2.0.1]: https://github.com/dzhus/static-text/compare/0.2.0...0.2.0.1
 [0.2.0]:   https://github.com/dzhus/static-text/compare/0.1.3.1...0.2.0
 [0.1.3.1]: https://github.com/dzhus/static-text/compare/0.1.3...0.1.3.1
