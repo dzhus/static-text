@@ -1,5 +1,5 @@
 name:        static-text
-version:     "0.2.0.2"
+version:     "0.2.0.3"
 synopsis:    Lists, Texts, ByteStrings and Vectors of statically known length
 
 description: static-text provides type-level safety for basic operations on
