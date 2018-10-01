@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0.3] - 2018-10-08
+
+### Changed
+
+- GHC 8.6.x support
+
 ## [0.2.0.2] - 2018-07-30
 
 ### Changed
@@ -70,6 +76,7 @@
 
 ## [0.1.0.0] - 2014-08-10
 
+[0.2.0.3]: https://github.com/dzhus/static-text/compare/0.2.0.2...0.2.0.3
 [0.2.0.2]: https://github.com/dzhus/static-text/compare/0.2.0.1...0.2.0.2
 [0.2.0.1]: https://github.com/dzhus/static-text/compare/0.2.0...0.2.0.1
 [0.2.0]:   https://github.com/dzhus/static-text/compare/0.1.3.1...0.2.0
