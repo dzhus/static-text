@@ -1,4 +1,2 @@
-resolver: nightly-2018-10-08
+resolver: nightly-2019-01-22
 pvp-bounds: upper
-extra-deps:
-- doctest-driver-gen-0.2.0.4

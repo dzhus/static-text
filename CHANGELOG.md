@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0.4] - 2019-01-23
+
+### Changed
+
+- Test suite dependencies bump
+
 ## [0.2.0.3] - 2018-10-08
 
 ### Changed
@@ -76,6 +82,7 @@
 
 ## [0.1.0.0] - 2014-08-10
 
+[0.2.0.4]: https://github.com/dzhus/static-text/compare/0.2.0.3...0.2.0.4
 [0.2.0.3]: https://github.com/dzhus/static-text/compare/0.2.0.2...0.2.0.3
 [0.2.0.2]: https://github.com/dzhus/static-text/compare/0.2.0.1...0.2.0.2
 [0.2.0.1]: https://github.com/dzhus/static-text/compare/0.2.0...0.2.0.1
