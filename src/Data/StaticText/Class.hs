@@ -4,8 +4,7 @@
 
 {-|
 
-Use this module when you need to add an 'IsStaticText' instance to a
-type.
+Class of statically-sized text-like types.
 
 -}
 
@@ -51,18 +50,19 @@ class IsStaticText a where
 
   -- | Simply wrap a value in a Static as is, assuming any length.
   --
-  -- __WARNING__ Use it only when you know what you're doing.
+  -- When implementing new "IsStaticText" instances, make this simply
+  -- apply the constructor of "Static".
+  --
+  -- This should only be used to implement "IsStaticText".
   --
   -- For example, an expression like
   --
-  -- > unsafeCreate "somestring" :: Static String 50
+  -- >>> unsafeCreate "somestring" :: Static String 50
+  -- "somestring"
   --
   -- will typecheck, although the stored length information will not
   -- match actual string size. This may result in wrong behaviour of
   -- all functions defined for "IsStaticText".
-  --
-  -- When writing new "IsStaticText" instances, make this simply apply
-  -- the constructor of "Static".
   unsafeCreate :: a -> Static a i
 
   -- | Forget type-level length, obtaining the underlying value.
