@@ -27,10 +27,10 @@ module Data.StaticText
          -- * Constructing static texts
          --
          -- | See also 'C.unsafeCreate'
-         createLeft
+         create
+       , createLeft
        , createRight
        , st
-       , create
        , replicate
 
          -- * Working with static texts
@@ -106,7 +106,7 @@ createRight e s =
     t = fromIntegral $ natVal (Proxy :: Proxy i)
 
 
--- | Attempt to safely create a Static if it matches target length.
+-- | Safely create a Static if it matches target length.
 --
 -- >>> create "foobar" :: Maybe (Static String 6)
 -- Just "foobar"
