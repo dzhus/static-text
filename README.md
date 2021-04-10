@@ -1,6 +1,6 @@
 # static-text: lists, Texts, ByteStrings and Vectors of statically known length
 
-[![Build & test](https://github.com/dzhus/static-text/workflows/Build%20&%20test/badge.svg)](https://github.com/dzhus/static-text/actions)
+[![Github CI build status](https://github.com/dzhus/static-text/actions/workflows/ci.yaml/badge.svg)](https://github.com/dzhus/static-text/actions/workflows/ci.yaml)
 [![Hackage](https://img.shields.io/hackage/v/static-text.svg?colorB=5e5184&style=flat)](https://hackage.haskell.org/package/static-text)
 [![Hackage deps](https://img.shields.io/hackage-deps/v/static-text.svg)](http://packdeps.haskellers.com/feed?needle=static-text)
 
