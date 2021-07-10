@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.0.7] - 2021-07-10
+
+### Changed
+
+- GHC 9.x support
+
 ## [0.2.0.6] - 2020-06-03
 
 ### Changed
@@ -94,6 +100,7 @@
 
 ## [0.1.0.0] - 2014-08-10
 
+[0.2.0.7]: https://github.com/dzhus/static-text/compare/0.2.0.6...0.2.0.7
 [0.2.0.6]: https://github.com/dzhus/static-text/compare/0.2.0.5...0.2.0.6
 [0.2.0.5]: https://github.com/dzhus/static-text/compare/0.2.0.4...0.2.0.5
 [0.2.0.4]: https://github.com/dzhus/static-text/compare/0.2.0.3...0.2.0.4
