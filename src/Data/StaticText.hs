@@ -64,6 +64,8 @@ import           Data.StaticText.TH
 -- >>> :set -XTemplateHaskell
 -- >>> :set -XOverloadedStrings
 -- >>> import Data.Char (toUpper)
+-- >>> import Data.StaticText
+-- >>> import Prelude as P hiding (drop, length, map, replicate, take)
 
 
 -- | Safely create a Static, possibly altering the source to match

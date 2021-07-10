@@ -45,7 +45,11 @@ st (LitS s) =
     at <- newName "a"
     return $ SigE (AppE (VarE 'unsafeCreate) (LitE $ StringL s))
                 (ForallT
+#if MIN_VERSION_template_haskell(2,17,0)
+                 [PlainTV at SpecifiedSpec]
+#else
                  [PlainTV at]
+#endif
 #if MIN_VERSION_template_haskell(2,10,0)
                  [ AppT (ConT ''IsString) (VarT at)
                  , AppT (ConT ''IsStaticText) (VarT at)] $
